@@ -30,7 +30,7 @@ namespace Win32
 	Window::Window(int w, int h, const wstring& title, Position position)
 		: width(w), height(h), title(title),
 		  window(nullptr),
-		  instance(GetModuleHandleW(title.c_str()))
+		  instance(GetModuleHandleW(nullptr))
 	{
 		int x = 0;
 		int y = 0;
@@ -85,7 +85,7 @@ namespace Win32
 	Window::Window(int w, int h, const wstring& title, Position position, const wstring& className)
 		: width(w), height(h), title(title),
 		  window(nullptr),
-		  instance(GetModuleHandleW(title.c_str()))
+		  instance(GetModuleHandleW(nullptr))
 	{
 		int x = 0;
 		int y = 0;
@@ -139,8 +139,9 @@ namespace Win32
 	Window::Window(int w, int h, const wstring& title, int x, int y)
 		: width(w), height(h), title(title),
 		  window(nullptr),
-		  instance(GetModuleHandleW(title.c_str()))
+		  instance(GetModuleHandleW(nullptr))
 	{
+
 		Core::WriteLog(L"SecTion", L"Info");
 		const wchar_t className[] = L"Win32Window by otya!";
 		//ウィンドウの登録
@@ -179,7 +180,7 @@ namespace Win32
 	Window::Window(int w, int h, const wstring& title, int x, int y, const wstring& className)
 		: width(w), height(h), title(title),
 		  window(nullptr),
-		  instance(GetModuleHandleW(title.c_str()))
+		  instance(GetModuleHandleW(nullptr))
 	{
 		//ウィンドウの登録
 		{

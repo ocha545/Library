@@ -7,10 +7,10 @@
 //#define FILE_TEST
 //#define AudioPlayer
 
-
 #include<iostream>
 #include"include/Window.h"
 #include"include/Graphics.h"
+#include"include/Keyboard.h"
 using namespace Win32;
 
 int main()
@@ -20,15 +20,28 @@ int main()
 	Window window{ 960, 720, L"たいとる", 10, 10 };
 	GraphicsXI::ClearColor(Color(0, 0, 60));
 	GraphicsXI gfx{ window.getHandle(), window.getInstance() };
+	Input input{ window.getHandle(), window.getInstance() };
 
 	window.show();
+	input.Acquire();
 
 	Rect rect{ 480, 360 };
+	int r = 0;
 
 	while (window.update())
 	{
+		input.Check();
+		if (input.pressed(Key::UP))
+		{
+			r++;
+		}
+		else if (input.pressed(Key::DOWN))
+		{
+			r--;
+		}
+
 		gfx.clear();
-		gfx.draw(rect.color(255, 128, 0).position(0.0f, 0.0f).get());
+		gfx.draw(rect.color(std::clamp(r, 0, 255), 0, 0).position(0.0f, 0.0f).get());
 		gfx.present();
 	}
 
