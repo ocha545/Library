@@ -8,18 +8,11 @@
 #include<algorithm>
 #include<cwctype>
 #include"Macros.h"
+#include"Helper.h"
 #define UsingWindow Win32_CPP::Window
 
 namespace Win32
 {
-//	enum class Position : long;
-//	enum class Result : long;
-//	enum class Button : long;
-//	enum class Icon : long;
-//	inline Position operator|(Position a, Position b);
-//	inline Position operator&(Position a, Position b);
-//	inline long operator|(Button a, Icon b);
-//	inline long operator|(Icon a, Button b);
 	enum class Position : long
 	{
 		None = 0,
@@ -85,7 +78,8 @@ namespace Win32
 		return static_cast<long>(a) | static_cast<long>(b);
 	}
 
-	using refstr = const std::wstring&;
+	using std::wstring;
+//	using const wstring& = const std::wstring&;
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp);
 
@@ -104,15 +98,15 @@ namespace Win32
 	private:
 		int width;
 		int height;
-		refstr title;
+		const wstring& title;
 		HWND window;
 		HINSTANCE instance;
 
 	public:
-		Window(int w, int h, refstr title, Position position);
-		Window(int w, int h, refstr title, Position position, refstr className);
-		Window(int w, int h, refstr title, int x, int y);
-		Window(int w, int h, refstr title, int x, int y, refstr className);
+		Window(int w, int h, const wstring& title, Position position);
+		Window(int w, int h, const wstring& title, Position position, const wstring& className);
+		Window(int w, int h, const wstring& title, int x, int y);
+		Window(int w, int h, const wstring& title, int x, int y, const wstring& className);
 		~Window();
 
 		bool update() const;
@@ -121,21 +115,21 @@ namespace Win32
 
 		HWND getHandle() const;
 		HINSTANCE getInstance() const;
-		Result showMessageBox(refstr title, refstr message, long flag) const;
-		Result showMessageBoxOk(refstr title, refstr message) const;
-		Result showMessageBoxYesNo(refstr title, refstr message) const;
+		Result showMessageBox(const wstring& title, const wstring& message, long flag) const;
+		Result showMessageBoxOk(const wstring& title, const wstring& message) const;
+		Result showMessageBoxYesNo(const wstring& title, const wstring& message) const;
 
-		static void SetIcon(refstr path);
-		static void SetCursor(refstr path);
+		static void SetIcon(const wstring& path);
+		static void SetCursor(const wstring& path);
 
-		static Result ShowMessageBox(HWND handle, HINSTANCE instance, refstr title, refstr message, long flag);
-		static Result ShowMessageBox(refstr title, refstr message, long flag);
-//		static Result ShowToastMessage(HWND handle, HINSTANCE instance, refstr info, refstr title, refstr tip);
-//		static Result ShowToastMessage(refstr info, refstr title, refstr tip);
+		static Result ShowMessageBox(HWND handle, HINSTANCE instance, const wstring& title, const wstring& message, long flag);
+		static Result ShowMessageBox(const wstring& title, const wstring& message, long flag);
+//		static Result ShowToastMessage(HWND handle, HINSTANCE instance, const wstring& info, const wstring& title, const wstring& tip);
+//		static Result ShowToastMessage(const wstring& info, const wstring& title, const wstring& tip);
 	};
 }
 
-
+//古いコード
 /*
 namespace Win32_CPP
 {

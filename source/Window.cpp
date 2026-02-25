@@ -27,7 +27,7 @@ namespace Win32
 		}
 	}
 
-	Window::Window(int w, int h, refstr title, Position position)
+	Window::Window(int w, int h, const wstring& title, Position position)
 		: width(w), height(h), title(title),
 		  window(nullptr),
 		  instance(GetModuleHandleW(title.c_str()))
@@ -82,7 +82,7 @@ namespace Win32
 			);
 		}
 	}
-	Window::Window(int w, int h, refstr title, Position position, refstr className)
+	Window::Window(int w, int h, const wstring& title, Position position, const wstring& className)
 		: width(w), height(h), title(title),
 		  window(nullptr),
 		  instance(GetModuleHandleW(title.c_str()))
@@ -136,7 +136,7 @@ namespace Win32
 			);
 		}
 	}
-	Window::Window(int w, int h, refstr title, int x, int y)
+	Window::Window(int w, int h, const wstring& title, int x, int y)
 		: width(w), height(h), title(title),
 		  window(nullptr),
 		  instance(GetModuleHandleW(title.c_str()))
@@ -176,7 +176,7 @@ namespace Win32
 			);
 		}
 	}
-	Window::Window(int w, int h, refstr title, int x, int y, refstr className)
+	Window::Window(int w, int h, const wstring& title, int x, int y, const wstring& className)
 		: width(w), height(h), title(title),
 		  window(nullptr),
 		  instance(GetModuleHandleW(title.c_str()))
@@ -248,29 +248,29 @@ namespace Win32
 		return this->instance;
 	}
 
-	Result Window::showMessageBox(refstr title, refstr message, long flag) const
+	Result Window::showMessageBox(const wstring& title, const wstring& message, long flag) const
 	{
 		return Window::ShowMessageBox(this->window, this->instance, title, message, flag);
 	}
-	Result Window::showMessageBoxOk(refstr title, refstr message) const
+	Result Window::showMessageBoxOk(const wstring& title, const wstring& message) const
 	{
 		return Window::ShowMessageBox(this->window, this->instance, title, message, Button::Ok | Icon::Information);
 	}
-	Result Window::showMessageBoxYesNo(refstr title, refstr message) const
+	Result Window::showMessageBoxYesNo(const wstring& title, const wstring& message) const
 	{
 		return Window::ShowMessageBox(this->window, this->instance, title, message, Button::YesNo | Icon::Information);
 	}
 
-	void Window::SetIcon(refstr path)
+	void Window::SetIcon(const wstring& path)
 	{
 		Core::icon = LoadIconW(NULL, path.c_str());
 	}
-	void Window::SetCursor(refstr path)
+	void Window::SetCursor(const wstring& path)
 	{
 		Core::cursor = LoadIconW(NULL, path.c_str());
 	}
 
-	Result Window::ShowMessageBox(HWND handle, HINSTANCE instance, refstr title, refstr message, long flag)
+	Result Window::ShowMessageBox(HWND handle, HINSTANCE instance, const wstring& title, const wstring& message, long flag)
 	{
 		MSGBOXPARAMSW param{};
 		param.cbSize = sizeof(MSGBOXPARAMSW);
@@ -294,7 +294,7 @@ namespace Win32
 		}
 		return Result::Null;
 	}
-	Result Window::ShowMessageBox(refstr title, refstr message, long flag)
+	Result Window::ShowMessageBox(const wstring& title, const wstring& message, long flag)
 	{
 		MSGBOXPARAMSW param{};
 		param.cbSize = sizeof(MSGBOXPARAMSW);

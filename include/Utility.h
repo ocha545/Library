@@ -1,20 +1,103 @@
 ﻿#pragma once
-#pragma warning(push)
-#pragma warning(disable: 6262)//関数はスタックの '35036' バイトを使用します。データの一部をヒープに移動することを考慮してください。
-#pragma warning(disable: 26819)//switch ラベルどうしの間に、注釈の付いていないフォールスルーがあります (es.78)。
-#define STB_IMAGE_IMPLEMENTATION
-#include"third_party/stb/stb_image.h"
-#pragma warning(pop)
 #include<vector>//配列
 #include<stdexcept>//例外
 #include<string>//文字列
 #include<iostream>//出力
+#include<format>//テキスト整形
 #include<filesystem>//存在確認
-#include<format>//文字列整形
 #include<DirectXMath.h>//XMFLOAT4
 #include"Helper.h"
 
-namespace Win32_CPP
+namespace Win32
+{
+	//RGBA値のエイリアスです
+//	using ubyte = unsigned char;
+
+	using DirectX::XMFLOAT4;
+	using std::wstring;
+	using std::wstring_view;
+	using ubyte = unsigned char;
+	constexpr float inv255 = 1.0f / 255.0f;
+
+	struct Color
+	{
+	public:
+		ubyte r;
+		ubyte g;
+		ubyte b;
+		ubyte a;
+
+		Color() = default;
+		Color(const Color&) = default;
+		Color(ubyte r, ubyte g, ubyte b);
+		Color(ubyte r, ubyte g, ubyte b, ubyte a);
+		Color(ubyte gs);
+		Color(ubyte gs, ubyte alpha);
+		Color(const wstring& hex);
+
+		friend Color operator+(const Color& base, const Color& blend);
+		friend Color operator-(const Color& base, const Color& blend);
+		friend Color operator*(const Color& base, const Color& blend);
+		friend std::ostream& operator<<(std::ostream& os, const Color& color);
+		Color operator+=(const Color& blend);
+		Color operator-=(const Color& blend);
+		XMFLOAT4 floats() const;
+		static Color IntHEX(unsigned int hex);
+	};
+
+	class Image
+	{
+	private:
+		//MEMO
+		/*
+		* widthとかheightもprivateにしたいけど、関数名と被るのでpublicにしてます
+		*
+		* 大文字始まりの関数にすれば被らないけど、
+		* 大文字始まりの関数はstatic関数ということにしてるのでやめました
+		*
+		* 今の所Textureクラスと組み合わせて使っているけど正直面倒
+		* Imageはあくまで画像データを保持するものとして使った方がいいかも
+		* Textureクラスの色データをImageクラスとして返す関数もあったらうれしい
+		*
+		* 色のブレンドとかはTextureで出来たら楽だけど
+		* Textureでは色データを保持していないので
+		* Imageでやらなければならない気がする
+		* それこそ全体の色なら保持しているのでシェーダーでブレンドしてもいいかも
+		* 乗算ならシェーダーでDiffuseを掛ければ良いだけだしね
+		*/
+
+	public:
+		int width = 0;
+		int height = 0;
+		int channels = sizeof(Color);
+		std::vector<Color> colors{};
+
+		Image() = default;
+		//画像のパスから読み込みます
+		Image(wstring_view path);
+		//生の色データから読み込みます
+		Image(int width, int height, const Color* rawData);
+		//色データから読み込みます
+		Image(int width, int height, const std::vector<Color>& data);
+
+		friend Image operator+(const Image& left, const Image& right);
+
+		Color getPixel(int x, int y) const;
+
+		void setPixel(int x, int y, const Color& color);
+
+		Image clip(int x, int y, int width, int height) const;
+
+		size_t size() const;
+
+		std::vector<Color> data() const;
+
+		void blendAddition(const Color& blend);
+	};
+}
+
+/*
+namespace Win32
 {
 	//RGBA値のエイリアスです
 	using ubyte = unsigned char;
@@ -153,7 +236,6 @@ namespace Win32_CPP
 		* Imageでやらなければならない気がする
 		* それこそ全体の色なら保持しているのでシェーダーでブレンドしてもいいかも
 		* 乗算ならシェーダーでDiffuseを掛ければ良いだけだしね
-		*/
 
 	public:
 		int width = 0;
@@ -165,8 +247,6 @@ namespace Win32_CPP
 		//画像のパスから読み込みます
 		Image(const std::wstring& path)
 		{
-//			unsigned char* pixels = stbi_load(Convert::MultiByteStr(path).c_str(), &width, &height, &channels, NULL);
-//			std::cout << Convert::MultiByteStr(path).c_str() << std::endl;
 			unsigned char* pixels = stbi_load(Convert::MultiByteStr(path).c_str(), &width, &height, &channels, NULL);
 			std::cout << Convert::MultiByteStr(path).c_str() << std::endl;
 			if (!std::filesystem::exists(path))
@@ -301,3 +381,4 @@ namespace Win32_CPP
 		}
 	};
 }
+*/

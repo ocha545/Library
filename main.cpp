@@ -9,8 +9,8 @@
 
 
 #include<iostream>
-#define ENABLE_WRITE_LOGS
 #include"include/Window.h"
+#include"include/Graphics.h"
 using namespace Win32;
 
 int main()
@@ -18,14 +18,18 @@ int main()
 	Window::SetIcon(L"images/icon.ico");
 	Window::SetCursor(L"images/cursor.cur");
 	Window window{ 960, 720, L"たいとる", 10, 10 };
+	GraphicsXI::ClearColor(Color(0, 0, 60));
+	GraphicsXI gfx{ window.getHandle(), window.getInstance() };
 
 	window.show();
-	window.showMessageBoxOk(L"たいとる", L"めっさげ");
-	Window::ShowMessageBox(L"たいとる", L"めっさげ", Button::Ok | Icon::Hand);
+
+	Rect rect{ 480, 360 };
 
 	while (window.update())
 	{
-
+		gfx.clear();
+		gfx.draw(rect.color(255, 128, 0).position(0.0f, 0.0f).get());
+		gfx.present();
 	}
 
 	window.close();
