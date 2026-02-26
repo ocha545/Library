@@ -2,8 +2,6 @@
 #include"Macros.h"
 #include"Helper.h"
 #include"Utility.h"
-using Win32_CPP::Color;
-using Win32_CPP::Image;
 // ComPtr メモリリークがトラウマなので
 #include<wrl.h>
 using Microsoft::WRL::ComPtr;
@@ -14,23 +12,204 @@ using Microsoft::WRL::ComPtr;
 #include<codecvt>
 #include<memory>
 
-#define UsingAudio Win32_CPP::Audio
-// Audio
-// 音声ファイルの詳細を取得するライブラリ
-#include"third_party/taglib/tag.h"
-#include"third_party/taglib/fileref.h"
-#include"third_party/taglib/mpeg/mpegfile.h"
-//#include"third_party/taglib/mpegapicframe.h"
-
 // 音声出力ライブラリ
 #include<xaudio2.h>
 #include<xaudio2fx.h>
 #include<xapo.h>
 #include<xapobase.h>
+
+// Audio
+// 音声ファイルの詳細を取得するライブラリ
+#include"third_party/taglib/tag.h"
+#include"third_party/taglib/fileref.h"
 // 音声ファイル読み取りライブラリ
 // Wave, MP3, FLAC, OGG
-#include"audio_impl.h"
+#include"third_party/dr_wav.h"
+#include"third_party/dr_mp3.h"
+#include"third_party/dr_flac.h"
+#include"third_party/vorbis/vorbisfile.h"
+#include"third_party/opusfile/opusfile.h"
 
+//#include"audio_impl.h"
+
+
+namespace Win32
+{
+	struct AudioMetaData
+	{
+		std::wstring title = L"";
+		std::wstring artist = L"";
+		std::wstring album = L"";
+		std::wstring genre = L"";
+		std::wstring comment = L"";
+		unsigned int track = 0;
+		unsigned int year = 0;
+//		Image jacket{};
+	};
+
+	struct AudioInfo
+	{
+		unsigned short FormatTag = NULL;
+		unsigned short Channels = NULL;
+		unsigned long SampleRate = NULL;
+		unsigned long AvgBytesPerSec = NULL;
+		unsigned short BlockAlign = NULL;
+		unsigned short BitsPerSample = NULL;
+	};
+
+	enum class AudioFormat
+	{
+		NONE = NULL,
+		WAVE = 1,
+		MP3 = 2,
+		FLAC = 3,
+		OGG = 4,
+		OPUS = 5,
+		MAX,
+	};
+
+	static double GetTotalLength(size_t size, unsigned long sampleRate, int channels);
+	static void SampleToTime(double in, int& h, int& m, double& s);
+	static double TimeToSample(int h, int m, double s);
+	static std::string ConvertTimeFormatA(double in);
+	static std::wstring ConvertTimeFormatW(double in);
+	static AudioFormat CheckFormat(const std::wstring& path);
+	static WAVEFORMATEX ConvertWaveFormat(const AudioInfo& af);
+
+	class MP3
+	{
+	private:
+		std::unique_ptr<drmp3> mp3;
+		std::vector<short> pcm;
+		AudioInfo info;
+		bool isRead;
+
+	public:
+		MP3(const std::wstring& path, bool extract);
+		~MP3();
+		operator bool();
+		const std::vector<short> getPCM() const;
+		const AudioInfo getInformation() const;
+	};
+
+	class WAVE
+	{
+	private:
+		std::unique_ptr<drwav> wav;
+		std::vector<short> pcm;
+		AudioInfo info;
+		bool isRead;
+
+	public:
+		WAVE(const std::wstring& path, bool extract);
+		~WAVE();
+		operator bool();
+		const std::vector<short> getPCM() const;
+		const AudioInfo getInformation() const;
+	};
+
+	class FLAC
+	{
+	private:
+		drflac* flac = nullptr;
+		std::vector<short> pcm;
+		AudioInfo info;
+		bool isRead;
+
+	public:
+		FLAC(const std::wstring& path, bool extract);
+		~FLAC();
+		operator bool();
+		const std::vector<short> getPCM() const;
+		const AudioInfo getInformation() const;
+	};
+
+	class OGG
+	{
+	private:
+		OggVorbis_File ogg;
+		std::vector<short> pcm;
+		AudioInfo info;
+		bool isRead;
+
+	public:
+		OGG(const std::wstring& path, bool extract);
+		~OGG();
+		operator bool();
+		const std::vector<short> getPCM() const;
+		const AudioInfo getInformation() const;
+	};
+
+	class OPUS
+	{
+	private:
+		bool isRead;
+		std::vector<short> pcm;
+		AudioInfo info;
+		OggOpusFile* opus;
+
+	public:
+		OPUS(const std::wstring& path, bool extract);
+		~OPUS();
+		operator bool();
+		const std::vector<short> getPCM() const;
+		const AudioInfo getInformation() const;
+	};
+
+	class Audio
+	{
+	private:
+		ComPtr<IXAudio2> XAudio2 = nullptr;
+		IXAudio2MasteringVoice* MasterVoice = nullptr;
+		IXAudio2SourceVoice* SourceVoice = nullptr;
+
+		XAUDIO2_VOICE_STATE XAudio2State{};
+		int loopCount = 0;
+		HRESULT Hr = NULL;
+		bool coInitilized = false;
+
+		std::vector<int16_t>	audio;
+		AudioMetaData			audioMetaData{};
+		AudioInfo				audioInfo{};
+		AudioFormat				audioFormat = AudioFormat::NONE;
+		std::wstring			audioFormatString[(size_t)AudioFormat::MAX]{
+			L"None",
+			L"Wave",
+			L"MP3",
+			L"Flac",
+			L"OGG",
+			L"Opus",
+		};
+
+	public:
+		Audio(const std::wstring& path, UINT32 loopCount = 0);
+		~Audio();
+
+		void Stop();
+
+		void Play();
+
+		void EnableReverb();
+
+		void DisableReverb();
+
+		std::wstring GetTimeW();
+
+		std::wstring GetNowTimeW();
+
+		XAUDIO2_VOICE_STATE State();
+			
+		const AudioInfo Information() const;
+
+//		const AudioMetaData MetaData() const;
+
+		const AudioFormat Format() const;
+
+		const std::wstring FormatString() const;
+	};
+}
+
+/*
 namespace Win32_CPP
 {
 	namespace Audio
@@ -505,7 +684,7 @@ namespace Win32_CPP
 						throw std::runtime_error("DR Wavの初期化に失敗しました");
 					}
 
-					uint64_t frameCount = 
+					uint64_t frameCount =
 						static_cast<uint64_t>(wav->channels) *
 						static_cast<uint64_t>(wav->totalPCMFrameCount);
 
@@ -552,7 +731,7 @@ namespace Win32_CPP
 					format.nAvgBytesPerSec = format.nSamplesPerSec * format.nBlockAlign;
 					localInfo = setInfo(format);
 
-					
+
 //					auto meta = TagLib::MPEG::File(TagLib::FileName(path.c_str()), true);
 //					auto metag = meta.ID3v2Tag();
 
@@ -956,3 +1135,4 @@ namespace Win32_CPP
 		};
 	}
 }
+*/

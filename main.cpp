@@ -11,6 +11,7 @@
 #include"include/Window.h"
 #include"include/Graphics.h"
 #include"include/Keyboard.h"
+#include"include/Audio.h"
 using namespace Win32;
 
 int main()
@@ -21,9 +22,16 @@ int main()
 	GraphicsXI::ClearColor(Color(0, 0, 60));
 	GraphicsXI gfx{ window.getHandle(), window.getInstance() };
 	Input input{ window.getHandle(), window.getInstance() };
+	Audio audio{ L"music/Alexandrite.wav" };
+//	Audio audio{ L"music/Blue.mp3" };
+//	Audio audio{ L"music/True-Peak.flac" };
+//	Audio audio{ L"music/audio.ogg" };
+//	Audio audio{ L"music/AIZO.opus" };
+	audio.EnableReverb();
 
 	window.show();
 	input.Acquire();
+	audio.Play();
 
 	Rect rect{ 480, 360 };
 	int r = 0;
