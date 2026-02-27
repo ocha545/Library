@@ -27,7 +27,6 @@ int main()
 //	Audio audio{ L"music/True-Peak.flac" };
 //	Audio audio{ L"music/audio.ogg" };
 //	Audio audio{ L"music/AIZO.opus" };
-	audio.EnableReverb();
 
 	window.show();
 	input.Acquire();

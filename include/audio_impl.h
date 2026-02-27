@@ -17,4 +17,4 @@
 #include"third_party/dr_flac.h"
 #endif
 
-#pragma pop
+#pragma warning(pop)

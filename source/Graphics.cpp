@@ -54,7 +54,7 @@ namespace Win32
 		D3D11_BUFFER_DESC desc{};
 		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.ByteWidth = size;
+		desc.ByteWidth = static_cast<UINT>(size);
 
 		D3D11_SUBRESOURCE_DATA data{};
 		data.pSysMem = vtxs;
@@ -66,7 +66,7 @@ namespace Win32
 		D3D11_BUFFER_DESC desc{};
 		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.ByteWidth = size;
+		desc.ByteWidth = static_cast<UINT>(size);
 
 		D3D11_SUBRESOURCE_DATA data{};
 		data.pSysMem = uvs;
@@ -78,7 +78,7 @@ namespace Win32
 		D3D11_BUFFER_DESC desc{};
 		desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.ByteWidth = size;
+		desc.ByteWidth = static_cast<UINT>(size);
 
 		D3D11_SUBRESOURCE_DATA data{};
 		data.pSysMem = idxs;

@@ -16,7 +16,6 @@
 #include<cmath>
 #include<wrl.h>
 #include<unordered_map>
-#include<mutex>
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 

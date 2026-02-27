@@ -41,7 +41,7 @@ namespace Win32
 			{
 				return emptyTxt;
 			}
-			size_t length = MultiByteToWideChar(
+			int length = MultiByteToWideChar(
 				CP_OEMCP,								//コードページ
 				NULL,									//フラグ
 				mbstr.c_str(),							//変換元のポインタ
@@ -80,7 +80,7 @@ namespace Win32
 				return emptyTxt;
 			}
 
-			size_t length = WideCharToMultiByte(
+			int length = WideCharToMultiByte(
 				CP_OEMCP,			//コードページ
 				NULL,				//フラグ
 				widestr.c_str(),	//変換元のポインタ

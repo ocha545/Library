@@ -10,7 +10,7 @@ struct VSOutput
 };
 
 //VSOutputはピクセルシェーダーに渡されるよ
-VSOutput vsMain(float3 position : POSITION0, float2 uv : TEXCOORD)
+VSOutput vsMain(float3 position : POSITION, float2 uv : TEXCOORD)
 {
 	VSOutput output;
 	output.position = mul(mat, float4(position, 1.0f));

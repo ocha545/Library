@@ -9,7 +9,6 @@
 #include<cwctype>
 #include"Macros.h"
 #include"Helper.h"
-#define UsingWindow Win32_CPP::Window
 
 namespace Win32
 {

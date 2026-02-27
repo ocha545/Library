@@ -5,9 +5,6 @@
 #include<wrl.h>
 using namespace Microsoft::WRL;
 
-//キーボードとかマウスとか
-#define UsingDevice Win32_CPP::Device
-
 // Direct Input
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
