@@ -16,13 +16,16 @@ using namespace Win32;
 
 int main()
 {
+	std::locale::global(std::locale("ja_JP.UTF-8"));
+	std::wcout.imbue(std::locale());
+
 	Window::SetIcon(L"images/icon.ico");
 	Window::SetCursor(L"images/cursor.cur");
 	Window window{ 960, 720, L"たいとる", 10, 10 };
 	GraphicsXI::ClearColor(Color(0, 0, 60));
 	GraphicsXI gfx{ window.getHandle(), window.getInstance() };
 	Input input{ window.getHandle(), window.getInstance() };
-	Audio audio{ L"music/Alexandrite.wav" };
+	Audio audio{ L"music/Alexandrite.mp3" };
 //	Audio audio{ L"music/Blue.mp3" };
 //	Audio audio{ L"music/True-Peak.flac" };
 //	Audio audio{ L"music/audio.ogg" };
@@ -31,6 +34,7 @@ int main()
 	window.show();
 	input.Acquire();
 	audio.Play();
+	auto coverImage = Texture{ audio.MetaData().jacket };
 
 	Rect rect{ 480, 360 };
 	int r = 0;
@@ -48,7 +52,8 @@ int main()
 		}
 
 		gfx.clear();
-		gfx.draw(rect.color(std::clamp(r, 0, 255), 0, 0).position(0.0f, 0.0f).get());
+		gfx.draw(coverImage.scaled(0.5f).get());
+//		gfx.draw(rect.color(std::clamp(r, 0, 255), 0, 0).position(0.0f, 0.0f).get());
 		gfx.present();
 	}
 

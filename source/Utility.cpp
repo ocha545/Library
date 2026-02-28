@@ -119,9 +119,26 @@ namespace Win32
 	//struct Color end
 
 	//class Image begin
+	Image::Image()
+	{
+		const int rgba = 255 / 100;
+		width = 100;
+		height = 100;
+		const size_t size = static_cast<size_t>(width * height);
+		if (size > SIZE_MAX) throw std::runtime_error("データサイズが大きすぎます！");
+		colors.resize(size);
+		for (int y = 0; y < 100; y++)
+		{
+			for (int x = 0; x < 100; x++)
+			{
+				colors[static_cast<size_t>(x + 100 * y)] = Color(rgba * y, rgba * x, rgba * x / 2);
+			}
+		}
+	}
 	Image::Image(wstring_view path)
 	{
-		unsigned char* pixels = stbi_load(Convert::MultiByteStr(path).c_str(), &width, &height, &channels, NULL);
+
+		unsigned char* pixels = stbi_load(Convert::MultiByteStr(path).c_str(), &width, &height, &channels, sizeof(Color));
 		std::cout << Convert::MultiByteStr(path).c_str() << std::endl;
 		if (!std::filesystem::exists(path))
 		{
@@ -131,6 +148,8 @@ namespace Win32
 		{
 			throw std::runtime_error("画像データが破損しています");
 		}
+		std::cout << "Image:Width " << width << "\n";
+		std::cout << "Image:Height " << height << "\n";
 
 		const size_t size = static_cast<size_t>(width * height);
 		if (size > SIZE_MAX) throw std::runtime_error("データサイズが大きすぎます！");
@@ -138,6 +157,7 @@ namespace Win32
 		colors.clear();
 		colors.resize(size);
 		std::memcpy(colors.data(), pixels, size * sizeof(Color));
+//		std::memcpy(colors.data(), pixels, size);
 
 		stbi_image_free(pixels);
 	}

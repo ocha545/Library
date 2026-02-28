@@ -72,7 +72,7 @@ namespace Win32
 		int channels = sizeof(Color);
 		std::vector<Color> colors{};
 
-		Image() = default;
+		Image();
 		//画像のパスから読み込みます
 		Image(wstring_view path);
 		//生の色データから読み込みます

@@ -1,5 +1,6 @@
 ﻿#include"../include/Audio.h"
 #include"../include/audio_impl.h"
+#include<fstream>
 
 namespace Win32
 {
@@ -151,6 +152,30 @@ namespace Win32
 				size_t frames = pcm.size() / info.Channels;
 				pcm.resize(frames);
 			}
+
+
+			TagLib::FileRef tagFile(TagLib::FileName(path.c_str()), true);
+			auto jacket = tagFile.tag()->complexProperties("PICTURE");
+			auto keys = tagFile.tag()->complexPropertyKeys();
+			if (tagFile.tag() && !tagFile.isNull())
+			{
+				if (!jacket.isEmpty())
+				{
+					std::ofstream outFile{ "cover.jpeg", std::ios::out | std::ios::binary };
+					auto pictureData = jacket.front()["data"].toByteVector();
+					outFile.write(pictureData.data(), pictureData.size());
+					outFile.close();
+					meta.jacket = Image{ L"cover.jpeg" };
+				}
+
+				meta.title = tagFile.tag()->title().toWString();
+				meta.artist = tagFile.tag()->artist().toWString();
+				meta.album = tagFile.tag()->album().toWString();
+				meta.genre = tagFile.tag()->genre().toWString();
+				meta.comment = tagFile.tag()->comment().toWString();
+				meta.track = tagFile.tag()->track();
+				meta.year = tagFile.tag()->year();
+			}
 		}
 	}
 	MP3::~MP3()
@@ -172,6 +197,10 @@ namespace Win32
 	const AudioInfo MP3::getInformation() const
 	{
 		return this->info;
+	}
+	const AudioMetaData MP3::getMetaData() const
+	{
+		return meta;
 	}
 	//class MP3 end
 
@@ -202,6 +231,18 @@ namespace Win32
 			info.BitsPerSample = wav->bitsPerSample;
 			info.BlockAlign = static_cast<unsigned short>(wav->channels * wav->bitsPerSample / 8);
 			info.AvgBytesPerSec = info.SampleRate * info.BlockAlign;
+
+			TagLib::FileRef tagFile(TagLib::FileName(path.c_str()), true);
+			if (tagFile.tag() && !tagFile.isNull())
+			{
+				meta.title = tagFile.tag()->title().toWString();
+				meta.artist = tagFile.tag()->artist().toWString();
+				meta.album = tagFile.tag()->album().toWString();
+				meta.genre = tagFile.tag()->genre().toWString();
+				meta.comment = tagFile.tag()->comment().toWString();
+				meta.track = tagFile.tag()->track();
+				meta.year = tagFile.tag()->year();
+			}
 		}
 	}
 	WAVE::~WAVE()
@@ -222,6 +263,10 @@ namespace Win32
 	const AudioInfo WAVE::getInformation() const
 	{
 		return this->info;
+	}
+	const AudioMetaData WAVE::getMetaData() const
+	{
+		return meta;
 	}
 	//class WAVE end
 
@@ -251,6 +296,29 @@ namespace Win32
 			info.BitsPerSample = 16;
 			info.BlockAlign = static_cast<unsigned short>(flac->channels * 16 / 8);
 			info.AvgBytesPerSec = info.SampleRate * info.BlockAlign;
+
+			TagLib::FileRef tagFile(TagLib::FileName(path.c_str()), true);
+			auto jacket = tagFile.tag()->complexProperties("PICTURE");
+			auto keys = tagFile.tag()->complexPropertyKeys();
+			if (tagFile.tag() && !tagFile.isNull())
+			{
+				if (!jacket.isEmpty())
+				{
+					std::ofstream outFile{ "cover.jpeg", std::ios::out | std::ios::binary };
+					auto pictureData = jacket.front()["data"].toByteVector();
+					outFile.write(pictureData.data(), pictureData.size());
+					outFile.close();
+					meta.jacket = Image{ L"cover.jpeg" };
+				}
+
+				meta.title = tagFile.tag()->title().toWString();
+				meta.artist = tagFile.tag()->artist().toWString();
+				meta.album = tagFile.tag()->album().toWString();
+				meta.genre = tagFile.tag()->genre().toWString();
+				meta.comment = tagFile.tag()->comment().toWString();
+				meta.track = tagFile.tag()->track();
+				meta.year = tagFile.tag()->year();
+			}
 		}
 	}
 	FLAC::~FLAC()
@@ -271,6 +339,10 @@ namespace Win32
 	const AudioInfo FLAC::getInformation() const
 	{
 		return this->info;
+	}
+	const AudioMetaData FLAC::getMetaData() const
+	{
+		return meta;
 	}
 	//class FLAC end
 
@@ -324,6 +396,29 @@ namespace Win32
 				ov_clear(&ogg);
 				throw;
 			}
+
+			TagLib::FileRef tagFile(TagLib::FileName(path.c_str()), true);
+			auto jacket = tagFile.tag()->complexProperties("PICTURE");
+			auto keys = tagFile.tag()->complexPropertyKeys();
+			if (tagFile.tag() && !tagFile.isNull())
+			{
+				if (!jacket.isEmpty())
+				{
+					std::ofstream outFile{ "cover.jpeg", std::ios::out | std::ios::binary };
+					auto pictureData = jacket.front()["data"].toByteVector();
+					outFile.write(pictureData.data(), pictureData.size());
+					outFile.close();
+					meta.jacket = Image{ L"cover.jpeg" };
+				}
+
+				meta.title = tagFile.tag()->title().toWString();
+				meta.artist = tagFile.tag()->artist().toWString();
+				meta.album = tagFile.tag()->album().toWString();
+				meta.genre = tagFile.tag()->genre().toWString();
+				meta.comment = tagFile.tag()->comment().toWString();
+				meta.track = tagFile.tag()->track();
+				meta.year = tagFile.tag()->year();
+			}
 		}
 	}
 	OGG::~OGG()
@@ -344,6 +439,10 @@ namespace Win32
 	const AudioInfo OGG::getInformation() const
 	{
 		return this->info;
+	}
+	const AudioMetaData OGG::getMetaData() const
+	{
+		return meta;
 	}
 	//class OGG end
 
@@ -396,6 +495,29 @@ namespace Win32
 				op_free(opus);
 				throw;
 			}
+
+			TagLib::FileRef tagFile(TagLib::FileName(path.c_str()), true);
+			auto jacket = tagFile.tag()->complexProperties("PICTURE");
+			auto keys = tagFile.tag()->complexPropertyKeys();
+			if (tagFile.tag() && !tagFile.isNull())
+			{
+				if (!jacket.isEmpty())
+				{
+					std::ofstream outFile{ "cover.jpeg", std::ios::out | std::ios::binary };
+					auto pictureData = jacket.front()["data"].toByteVector();
+					outFile.write(pictureData.data(), pictureData.size());
+					outFile.close();
+					meta.jacket = Image{ L"cover.jpeg" };
+				}
+
+				meta.title = tagFile.tag()->title().toWString();
+				meta.artist = tagFile.tag()->artist().toWString();
+				meta.album = tagFile.tag()->album().toWString();
+				meta.genre = tagFile.tag()->genre().toWString();
+				meta.comment = tagFile.tag()->comment().toWString();
+				meta.track = tagFile.tag()->track();
+				meta.year = tagFile.tag()->year();
+			}
 		}
 	}
 	OPUS::~OPUS()
@@ -414,6 +536,10 @@ namespace Win32
 	{
 		return this->info;
 	}
+	const AudioMetaData OPUS::getMetaData() const
+	{
+		return meta;
+	}
 	//class OPUS end
 
 	//class Audio begin
@@ -431,6 +557,7 @@ namespace Win32
 		std::vector<short> localAudio;
 		AudioInfo localInfo{};
 		AudioFormat localFormat = CheckFormat(path);
+		AudioMetaData localMetaData{};
 
 //		WAVEFORMATEX format{}; <- ConvertWaveFormat(localInfo);
 		if (localFormat == AudioFormat::WAVE)
@@ -475,6 +602,7 @@ namespace Win32
 			MP3 mp3{ path, true };
 			localInfo = mp3.getInformation();
 			localAudio = mp3.getPCM();
+			localMetaData = mp3.getMetaData();
 /*
 			long sampleRate = 0l;
 			int channels = 0;
@@ -661,6 +789,7 @@ namespace Win32
 		this->audio.swap(localAudio);
 		this->audioInfo = localInfo;
 		this->audioFormat = localFormat;
+		this->audioMetaData = localMetaData;
 	}
 	Audio::~Audio()
 	{
@@ -775,10 +904,10 @@ namespace Win32
 		return audioInfo;
 	}
 
-//	const AudioMetaData Audio::MetaData() const
-//	{
-//		return audioMetaData;
-//	}
+	const AudioMetaData Audio::MetaData() const
+	{
+		return audioMetaData;
+	}
 
 	const AudioFormat Audio::Format() const
 	{

@@ -22,6 +22,8 @@ using Microsoft::WRL::ComPtr;
 // 音声ファイルの詳細を取得するライブラリ
 #include"third_party/taglib/tag.h"
 #include"third_party/taglib/fileref.h"
+#include"third_party/taglib/mpeg/mpegfile.h"
+#include"third_party/taglib/toolkit/tlist.h"
 // 音声ファイル読み取りライブラリ
 // Wave, MP3, FLAC, OGG
 #include"third_party/dr_wav.h"
@@ -44,7 +46,7 @@ namespace Win32
 		std::wstring comment = L"";
 		unsigned int track = 0;
 		unsigned int year = 0;
-//		Image jacket{};
+		Image jacket{};
 	};
 
 	struct AudioInfo
@@ -81,7 +83,8 @@ namespace Win32
 	private:
 		std::unique_ptr<drmp3> mp3;
 		std::vector<short> pcm;
-		AudioInfo info;
+		AudioInfo info{};
+		AudioMetaData meta{};
 		bool isRead;
 
 	public:
@@ -90,6 +93,7 @@ namespace Win32
 		operator bool();
 		const std::vector<short> getPCM() const;
 		const AudioInfo getInformation() const;
+		const AudioMetaData getMetaData() const;
 	};
 
 	class WAVE
@@ -97,7 +101,8 @@ namespace Win32
 	private:
 		std::unique_ptr<drwav> wav;
 		std::vector<short> pcm;
-		AudioInfo info;
+		AudioInfo info{};
+		AudioMetaData meta{};
 		bool isRead;
 
 	public:
@@ -106,6 +111,7 @@ namespace Win32
 		operator bool();
 		const std::vector<short> getPCM() const;
 		const AudioInfo getInformation() const;
+		const AudioMetaData getMetaData() const;
 	};
 
 	class FLAC
@@ -113,7 +119,8 @@ namespace Win32
 	private:
 		drflac* flac = nullptr;
 		std::vector<short> pcm;
-		AudioInfo info;
+		AudioInfo info{};
+		AudioMetaData meta{};
 		bool isRead;
 
 	public:
@@ -122,6 +129,7 @@ namespace Win32
 		operator bool();
 		const std::vector<short> getPCM() const;
 		const AudioInfo getInformation() const;
+		const AudioMetaData getMetaData() const;
 	};
 
 	class OGG
@@ -129,7 +137,8 @@ namespace Win32
 	private:
 		OggVorbis_File ogg;
 		std::vector<short> pcm;
-		AudioInfo info;
+		AudioInfo info{};
+		AudioMetaData meta{};
 		bool isRead;
 
 	public:
@@ -138,6 +147,7 @@ namespace Win32
 		operator bool();
 		const std::vector<short> getPCM() const;
 		const AudioInfo getInformation() const;
+		const AudioMetaData getMetaData() const;
 	};
 
 	class OPUS
@@ -145,7 +155,8 @@ namespace Win32
 	private:
 		bool isRead;
 		std::vector<short> pcm;
-		AudioInfo info;
+		AudioInfo info{};
+		AudioMetaData meta{};
 		OggOpusFile* opus;
 
 	public:
@@ -154,6 +165,7 @@ namespace Win32
 		operator bool();
 		const std::vector<short> getPCM() const;
 		const AudioInfo getInformation() const;
+		const AudioMetaData getMetaData() const;
 	};
 
 	class Audio
@@ -201,7 +213,7 @@ namespace Win32
 			
 		const AudioInfo Information() const;
 
-//		const AudioMetaData MetaData() const;
+		const AudioMetaData MetaData() const;
 
 		const AudioFormat Format() const;
 
