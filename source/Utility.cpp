@@ -161,6 +161,15 @@ namespace Win32
 
 		stbi_image_free(pixels);
 	}
+	Image::Image(int width, int height)
+		: width(width), height(height)
+	{
+		const size_t size = static_cast<size_t>(width * height);
+		if (size > SIZE_MAX) throw std::runtime_error("データサイズが大きすぎます！");
+
+		colors.clear();
+		colors.resize(size);
+	}
 	Image::Image(int width, int height, const Color* rawData)
 		: width(width), height(height)
 	{
@@ -252,6 +261,34 @@ namespace Win32
 		}
 		out.shrink_to_fit();
 		return Image{ width, height, out };
+	}
+
+	Image Image::scaled(int scale) const
+	{
+		if ((scale & 1) != 0)
+		{
+			throw std::runtime_error("scaleは偶数のみ指定してください");
+		}
+
+		Image out{ width * scale, height * scale };
+		Color color;
+
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				color = this->getPixel(x, y);
+				for (int xs = 0; xs < scale; xs++)
+				{
+					for (int ys = 0; ys < scale; ys++)
+					{
+						out.setPixel(x * scale + xs, y * scale + ys, color);
+					}
+				}
+			}
+		}
+
+		return out;
 	}
 
 	size_t Image::size() const

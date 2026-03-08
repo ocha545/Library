@@ -75,6 +75,8 @@ namespace Win32
 		Image();
 		//画像のパスから読み込みます
 		Image(wstring_view path);
+		//大きさのみ設定します
+		Image(int width, int height);
 		//生の色データから読み込みます
 		Image(int width, int height, const Color* rawData);
 		//色データから読み込みます
@@ -87,6 +89,8 @@ namespace Win32
 		void setPixel(int x, int y, const Color& color);
 
 		Image clip(int x, int y, int width, int height) const;
+
+		Image scaled(int scale) const;
 
 		size_t size() const;
 

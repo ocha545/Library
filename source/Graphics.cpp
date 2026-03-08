@@ -186,6 +186,8 @@ namespace Win32
 	Core::BShape& Core::BShape::scaled(float scale)
 	{
 		command.scale = scale;
+		command.size.w = scale * command.size.w;
+		command.size.h = scale * command.size.h;
 		return *this;
 	}
 	Core::DrawCommand Core::BShape::get()
@@ -861,15 +863,20 @@ namespace Win32
 		}
 		for (auto& cmd : cmds)
 		{
+
 			//行列計算とか
+			float cx = -cmd.size.w / 2.0f;
+			float cy = -cmd.size.h / 2.0f;
+
 			XMMATRIX matrix =
-				//						XMMatrixTranslation(0 - cmd.size.w / 2, 0 - cmd.size.h / 2, cmd.pos.z) *	//回転用座標
-				//						XMMatrixRotationX(cmd.angleX) *												//X回転
-				//						XMMatrixRotationY(cmd.angleY) *												//Y回転
-				//						XMMatrixRotationZ(cmd.angleZ) *												//Z回転
-				XMMatrixScaling(cmd.scale, cmd.scale, cmd.scale) *							//スケール
-				XMMatrixTranslation(cmd.pos.x, cmd.pos.y, cmd.pos.z) *						//座標
-				XMMatrixOrthographicOffCenterLH(											//座標変換
+				XMMatrixTranslation(cx, cy, 0.0f) *						//回転用座標
+				XMMatrixRotationX(cmd.angleX) *							//X回転
+				XMMatrixRotationY(cmd.angleY) *							//Y回転
+				XMMatrixRotationZ(cmd.angleZ) *							//Z回転
+				XMMatrixScaling(cmd.scale, cmd.scale, 1.0f) *		//スケール
+				XMMatrixTranslation(-cx, -cy, 0.0f) *						//回転用座標
+				XMMatrixTranslation(cmd.pos.x, cmd.pos.y, cmd.pos.z) *	//座標
+				XMMatrixOrthographicOffCenterLH(						//座標変換
 					0.0f, Core::viewPort.Width,
 					Core::viewPort.Height, 0.0f,
 					0.0f, 1.0f

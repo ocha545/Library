@@ -59,12 +59,16 @@ int main()
 	input.Acquire();
 	audio.Play();
 	auto coverImage = Texture{ audio.MetaData().jacket };
+	coverImage.scaled(0.5f);
 
-	Rect rect{ 480, 360 };
 	int r = 0;
+	float theta = 0.0f;
+
+	Texture image{ Image{L"images/yno.png"}.scaled(2) };
 
 	while (window.update())
 	{
+		theta += 0.01f;
 		input.Check();
 		if (input.pressed(Key::UP))
 		{
@@ -76,7 +80,8 @@ int main()
 		}
 
 		gfx.clear();
-		gfx.draw(coverImage.color(std::clamp(r, 0, 255), 0, 0).scaled(0.5f).get());
+		gfx.draw(image.rotationX(theta).rotationZ(theta).get());
+//		gfx.draw(coverImage.color(std::clamp(r, 0, 255), 0, 0).get());
 		gfx.present();
 	}
 
