@@ -25,12 +25,36 @@ int main()
 	GraphicsXI::ClearColor(Color(0, 0, 60));
 	GraphicsXI gfx{ window.getHandle(), window.getInstance() };
 	Input input{ window.getHandle(), window.getInstance() };
-	Audio audio{ L"music/Alexandrite.mp3" };
-//	Audio audio{ L"music/Blue.mp3" };
+//	Audio audio{ L"music/Alexandrite-artworks.mp3" };
+	Audio audio{ L"music/Blue.mp3" };
 //	Audio audio{ L"music/True-Peak.flac" };
 //	Audio audio{ L"music/audio.ogg" };
 //	Audio audio{ L"music/AIZO.opus" };
 
+//	MP3 file{ L"music/Blue.mp3", true };
+//	std::vector<short> pcm = file.getPCM();
+//	LowShelfFilter lf{}, rf{};
+//	double sampleRate = static_cast<double>(file.getInformation().SampleRate);
+//	double cutOff = 200.0;
+//	double dbGain = 6.0;
+//	double Q = 0.707;
+//	lf.updateCoefficients(sampleRate, cutOff, dbGain, Q);
+//	rf.updateCoefficients(sampleRate, cutOff, dbGain, Q);
+//	for (size_t i = 0; i < pcm.size(); i += 2)
+//	{
+//		float left = pcm[i] / 32768.0f;
+//		float right = pcm[i + 1] / 32768.0f;
+//
+//		float leftOut = lf.process(left);
+//		float rightOut = rf.process(right);
+//
+//		leftOut = std::clamp<float>(leftOut, -1.0f, 1.0f);
+//		rightOut = std::clamp<float>(rightOut, -1.0f, 1.0f);
+//
+//		pcm[i] = static_cast<short>(leftOut * 32767.0f);
+//		pcm[i + 1] = static_cast<short>(rightOut * 32767.0f);
+//	}
+//	Audio audio{ pcm, file.getInformation() };
 	window.show();
 	input.Acquire();
 	audio.Play();
@@ -44,16 +68,15 @@ int main()
 		input.Check();
 		if (input.pressed(Key::UP))
 		{
-			r++;
+			r += 2;
 		}
 		else if (input.pressed(Key::DOWN))
 		{
-			r--;
+			r -= 2;
 		}
 
 		gfx.clear();
-		gfx.draw(coverImage.scaled(0.5f).get());
-//		gfx.draw(rect.color(std::clamp(r, 0, 255), 0, 0).position(0.0f, 0.0f).get());
+		gfx.draw(coverImage.color(std::clamp(r, 0, 255), 0, 0).scaled(0.5f).get());
 		gfx.present();
 	}
 

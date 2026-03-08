@@ -542,6 +542,8 @@ namespace Win32
 	}
 	//class OPUS end
 
+
+
 	//class Audio begin
 	Audio::Audio(const std::wstring& path, UINT32 loopCount)
 	{
@@ -791,6 +793,88 @@ namespace Win32
 		this->audioFormat = localFormat;
 		this->audioMetaData = localMetaData;
 	}
+	Audio::Audio(const std::vector<short>& pcmData, const AudioInfo& info, UINT32 loopCount)
+	{
+		if (loopCount > INFINITE_LOOP)
+		{
+			throw std::invalid_argument("ループ回数が255以上になりました。無限ループにする場合、INFINITE_LOOPを指定してください");
+		}
+
+		std::vector<short> localAudio = pcmData;
+		AudioInfo localInfo = info;
+		AudioFormat localFormat = AudioFormat::NONE;
+		AudioMetaData localMetaData{};
+
+		const uint64_t audioByteCount = static_cast<uint64_t>(localAudio.size()) * sizeof(int16_t);
+		if (audioByteCount > (std::numeric_limits<uint64_t>::max)())
+		{
+			throw std::runtime_error("音声データが大きすぎてXAudio2に送れません");
+		}
+
+		Hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+		if (SUCCEEDED(Hr))
+		{
+			this->coInitilized = true;
+		}
+		else
+		{
+			throw std::runtime_error("COMオブジェクトの初期化に失敗しました");
+		}
+
+		Hr = XAudio2Create(XAudio2.GetAddressOf());
+		if (FAILED(Hr))
+		{
+			CoUninitialize();
+			this->coInitilized = false;
+			throw std::runtime_error("XAudio2の作成に失敗しました");
+		}
+
+		Hr = XAudio2->CreateMasteringVoice(&MasterVoice);
+		if (FAILED(Hr))
+		{
+			XAudio2.Reset();
+			CoUninitialize();
+			this->coInitilized = false;
+			throw std::runtime_error("マスターボイスの作成に失敗しました");
+		}
+
+		WAVEFORMATEX format = ConvertWaveFormat(localInfo);
+		Hr = XAudio2->CreateSourceVoice(&SourceVoice, &format, XAUDIO2_VOICE_USEFILTER);
+		if (FAILED(Hr))
+		{
+			XAudio2.Reset();
+			CoUninitialize();
+			this->coInitilized = false;
+			throw std::runtime_error("ソースボイスの作成に失敗しました");
+		}
+
+		std::cout << "Audio Bytes : " << audioByteCount << "\n";
+		std::cout << "LImit?	  : " << (audioByteCount >= 0x7fffffff);
+		std::cout << "pcmData.size() % channels = " << (localAudio.size() % format.nChannels) << std::endl;
+
+
+		XAUDIO2_BUFFER xAudio2Buffer{};
+
+		xAudio2Buffer.pAudioData = reinterpret_cast<const BYTE*>(localAudio.data());
+		xAudio2Buffer.Flags = XAUDIO2_END_OF_STREAM;
+		xAudio2Buffer.AudioBytes = static_cast<UINT32>(audioByteCount);
+		xAudio2Buffer.LoopCount = loopCount;
+
+		Hr = SourceVoice->SubmitSourceBuffer(&xAudio2Buffer);
+		if (FAILED(Hr))
+		{
+			SourceVoice->DestroyVoice();
+			XAudio2.Reset();
+			CoUninitialize();
+			this->coInitilized = false;
+			throw std::runtime_error(std::format("SouceBufferの送信に失敗しました:{}", Hr));
+		}
+
+		this->audio.swap(localAudio);
+		this->audioInfo = localInfo;
+		this->audioFormat = localFormat;
+		this->audioMetaData = localMetaData;
+	}
 	Audio::~Audio()
 	{
 		try
@@ -840,6 +924,75 @@ namespace Win32
 	{
 		if (!SourceVoice) return;
 		ComPtr<IUnknown> pXAPO;
+//		Hr = XAudio2CreateReverb(pXAPO.GetAddressOf());
+		Hr = CreateFX(__uuidof(FXReverb), pXAPO.GetAddressOf());
+		if (FAILED(Hr) || !pXAPO) return;
+		XAUDIO2_EFFECT_DESCRIPTOR effectDesc{};
+		effectDesc.InitialState = true;
+		effectDesc.OutputChannels = audioInfo.Channels;
+		effectDesc.pEffect = pXAPO.Get();
+		XAUDIO2_EFFECT_CHAIN effectChain{};
+		effectChain.EffectCount = 1;
+		effectChain.pEffectDescriptors = &effectDesc;
+		SourceVoice->SetEffectChain(&effectChain);
+
+		FXREVERB_PARAMETERS params{};
+		params.Diffusion = FXREVERB_MIN_DIFFUSION;
+		params.RoomSize =  FXREVERB_MIN_ROOMSIZE;
+
+		SourceVoice->SetEffectParameters(0, &params, sizeof(FXREVERB_PARAMETERS));
+		SourceVoice->EnableEffect(0);
+
+	}
+
+	void Audio::DisableReverb()
+	{
+		if (SourceVoice)
+		{
+			SourceVoice->DisableEffect(0);
+		}
+	}
+
+	void Audio::EnableEcho()
+	{
+		if (!SourceVoice) return;
+		ComPtr<IUnknown> pXAPO;
+		Hr = CreateFX(__uuidof(FXEcho), pXAPO.GetAddressOf());
+//		Hr = XAudio2CreateReverb(pXAPO.GetAddressOf());
+		if (FAILED(Hr) || !pXAPO) return;
+		XAUDIO2_EFFECT_DESCRIPTOR effectDesc{};
+		effectDesc.InitialState = true;
+		effectDesc.OutputChannels = audioInfo.Channels;
+		effectDesc.pEffect = pXAPO.Get();
+		XAUDIO2_EFFECT_CHAIN effectChain{};
+		effectChain.EffectCount = 1;
+		effectChain.pEffectDescriptors = &effectDesc;
+		SourceVoice->SetEffectChain(&effectChain);
+
+		FXECHO_PARAMETERS params{};
+		params.Delay = FXECHO_DEFAULT_DELAY;
+		params.Feedback = FXECHO_DEFAULT_FEEDBACK;
+		params.WetDryMix = FXECHO_DEFAULT_WETDRYMIX;
+
+		SourceVoice->SetEffectParameters(0, &params, sizeof(FXECHO_PARAMETERS));
+		SourceVoice->EnableEffect(0);
+	}
+
+	void Audio::DisableEcho()
+	{
+		if (SourceVoice)
+		{
+			SourceVoice->DisableEffect(0);
+		}
+	}
+
+	void Audio::EnableEuqalizer()
+	{
+		if (!SourceVoice) return;
+		ComPtr<IUnknown> pXAPO;
+
+		Hr = CreateFX(__uuidof(FXEQ), pXAPO.GetAddressOf());
+
 		Hr = XAudio2CreateReverb(pXAPO.GetAddressOf());
 		if (FAILED(Hr) || !pXAPO) return;
 		XAUDIO2_EFFECT_DESCRIPTOR effectDesc{};
@@ -850,12 +1003,26 @@ namespace Win32
 		effectChain.EffectCount = 1;
 		effectChain.pEffectDescriptors = &effectDesc;
 		SourceVoice->SetEffectChain(&effectChain);
-		//				SourceVoice->SetEffectParameters(0, &reverbParameters[0], sizeof(reverbParameters[0]));
-		SourceVoice->EnableEffect(0);
 
+		FXEQ_PARAMETERS params{};
+		params.Bandwidth0 = FXEQ_DEFAULT_BANDWIDTH;
+		params.Bandwidth1 = FXEQ_DEFAULT_BANDWIDTH;
+		params.Bandwidth2 = FXEQ_DEFAULT_BANDWIDTH;
+		params.Bandwidth3 = FXEQ_DEFAULT_BANDWIDTH;
+		params.FrequencyCenter0 = FXEQ_DEFAULT_FREQUENCY_CENTER_0;
+		params.FrequencyCenter1 = FXEQ_DEFAULT_FREQUENCY_CENTER_1;
+		params.FrequencyCenter2 = FXEQ_DEFAULT_FREQUENCY_CENTER_2;
+		params.FrequencyCenter3 = FXEQ_DEFAULT_FREQUENCY_CENTER_3;
+		params.Gain0 = FXEQ_DEFAULT_GAIN;
+		params.Gain1 = FXEQ_DEFAULT_GAIN;
+		params.Gain2 = FXEQ_DEFAULT_GAIN;
+		params.Gain3 = FXEQ_DEFAULT_GAIN;
+
+		SourceVoice->SetEffectParameters(0, &params, sizeof(FXEQ_PARAMETERS));
+		SourceVoice->EnableEffect(0);
 	}
 
-	void Audio::DisableReverb()
+	void Audio::DisableEuqalizer()
 	{
 		if (SourceVoice)
 		{

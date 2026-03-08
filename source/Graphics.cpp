@@ -245,6 +245,13 @@ namespace Win32
 	}
 	//class Rect end
 
+	//class Line begin
+	Line::Line(int thickness, int length)
+	{
+		float thickness_f = static_cast<float>(thickness);
+		float length_f = static_cast<float>(length);
+	}
+
 	//class Circle begin
 	Circle::Circle(int radius)
 	{

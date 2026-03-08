@@ -78,8 +78,8 @@ namespace Win32
 		struct DrawCommand
 		{
 			ComPtr<ID3D11Buffer> vertexBuffer = nullptr;
-			ComPtr<ID3D11Buffer> texcoordBuffer = nullptr;
 			ComPtr<ID3D11Buffer> indexBuffer = nullptr;
+			ComPtr<ID3D11Buffer> texcoordBuffer = nullptr;
 			ComPtr<ID3D11ShaderResourceView> srv = nullptr;
 			CommandType type = CommandType::NONE;
 			unsigned int indexCount = 0;
@@ -144,6 +144,12 @@ namespace Win32
 		Rect() = default;
 		Rect(const Rect&) = default;
 		Rect(int width, int height);
+	};
+
+	class Line SEALED : public Core::BShape
+	{
+	public:
+		Line(int thickness, int length);
 	};
 
 	class Circle SEALED : public Core::BShape

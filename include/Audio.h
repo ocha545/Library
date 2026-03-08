@@ -11,12 +11,14 @@ using Microsoft::WRL::ComPtr;
 #include<filesystem>
 #include<codecvt>
 #include<memory>
+#include<math.h>
 
 // 音声出力ライブラリ
 #include<xaudio2.h>
 #include<xaudio2fx.h>
 #include<xapo.h>
 #include<xapobase.h>
+#include<xapofx.h>
 
 // Audio
 // 音声ファイルの詳細を取得するライブラリ
@@ -31,8 +33,6 @@ using Microsoft::WRL::ComPtr;
 #include"third_party/dr_flac.h"
 #include"third_party/vorbis/vorbisfile.h"
 #include"third_party/opusfile/opusfile.h"
-
-//#include"audio_impl.h"
 
 
 namespace Win32
@@ -70,6 +70,14 @@ namespace Win32
 		MAX,
 	};
 
+	enum class Log
+	{
+		Information,
+		Warning,
+		Error,
+		Other
+	};
+
 	static double GetTotalLength(size_t size, unsigned long sampleRate, int channels);
 	static void SampleToTime(double in, int& h, int& m, double& s);
 	static double TimeToSample(int h, int m, double s);
@@ -77,6 +85,10 @@ namespace Win32
 	static std::wstring ConvertTimeFormatW(double in);
 	static AudioFormat CheckFormat(const std::wstring& path);
 	static WAVEFORMATEX ConvertWaveFormat(const AudioInfo& af);
+	static void WriteLog()
+	{
+
+	}
 
 	class MP3
 	{
@@ -168,6 +180,61 @@ namespace Win32
 		const AudioMetaData getMetaData() const;
 	};
 
+
+
+
+
+
+
+
+	class LowShelfFilter {
+	private:
+		// フィルタ係数
+		double b0, b1, b2, a0, a1, a2;
+		// 遅延バッファ（過去の値を保持）
+		double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+
+	public:
+		// sampleRate: 44100等, cutoff: 200Hz等, dbGain: 増減量(dB), Q: 0.707等
+		void updateCoefficients(double sampleRate, double cutoff, double dbGain, double Q) {
+			double A = std::pow(10.0, dbGain / 40.0);
+			double omega = 2.0 * 3.14159265358979323846 * cutoff / sampleRate;
+			double sn = std::sin(omega);
+			double cs = std::cos(omega);
+			double alpha = sn / (2.0 * Q);
+			double beta = 2.0 * std::sqrt(A) * alpha;
+
+			b0 = A * ((A + 1.0) - (A - 1.0) * cs + beta);
+			b1 = 2.0 * A * ((A - 1.0) - (A + 1.0) * cs);
+			b2 = A * ((A + 1.0) - (A - 1.0) * cs - beta);
+			a0 = (A + 1.0) + (A - 1.0) * cs + beta;
+			a1 = -2.0 * ((A - 1.0) + (A + 1.0) * cs);
+			a2 = (A + 1.0) + (A - 1.0) * cs - beta;
+		}
+
+		float process(float input) {
+			// 差分方程式の計算
+			double output = (b0 / a0) * input + (b1 / a0) * x1 + (b2 / a0) * x2
+				- (a1 / a0) * y1 - (a2 / a0) * y2;
+
+			// 過去の値を更新
+			x2 = x1;
+			x1 = input;
+			y2 = y1;
+			y1 = output;
+
+			return static_cast<float>(output);
+		}
+	};
+
+
+
+
+
+
+
+
+
 	class Audio
 	{
 	private:
@@ -180,7 +247,7 @@ namespace Win32
 		HRESULT Hr = NULL;
 		bool coInitilized = false;
 
-		std::vector<int16_t>	audio;
+		std::vector<short>	audio;
 		AudioMetaData			audioMetaData{};
 		AudioInfo				audioInfo{};
 		AudioFormat				audioFormat = AudioFormat::NONE;
@@ -195,6 +262,7 @@ namespace Win32
 
 	public:
 		Audio(const std::wstring& path, UINT32 loopCount = 0);
+		Audio(const std::vector<short>& pcmData, const AudioInfo& info, UINT32 loopCount = 0);
 		~Audio();
 
 		void Stop();
@@ -204,6 +272,14 @@ namespace Win32
 		void EnableReverb();
 
 		void DisableReverb();
+
+		void EnableEcho();
+
+		void DisableEcho();
+
+		void EnableEuqalizer();
+
+		void DisableEuqalizer();
 
 		std::wstring GetTimeW();
 
@@ -462,7 +538,7 @@ namespace Win32_CPP
 			HRESULT Hr = NULL;
 			bool coInitilized = false;
 
-			std::vector<int16_t>	audio;
+			std::vector<short>	audio;
 			AudioMetaData			audioMetaData{};
 			AudioInfo				audioInfo{};
 			AudioFormat				audioFormat = AudioFormat::NONE;
@@ -821,7 +897,7 @@ namespace Win32_CPP
 					throw std::runtime_error("現在サポートされていないフォーマットです");
 				}
 
-				const uint64_t audioByteCount = static_cast<uint64_t>(localAudio.size()) * sizeof(int16_t);
+				const uint64_t audioByteCount = static_cast<uint64_t>(localAudio.size()) * sizeof(short);
 				if (audioByteCount > (std::numeric_limits<uint64_t>::max)())
 				{
 					throw std::runtime_error("音声データが大きすぎてXAudio2に送れません");
