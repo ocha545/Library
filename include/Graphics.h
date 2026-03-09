@@ -149,6 +149,7 @@ namespace Win32
 	class Line SEALED : public Core::BShape
 	{
 	public:
+		//未使用
 		Line(int thickness, int length);
 	};
 
@@ -164,6 +165,7 @@ namespace Win32
 	class Texture SEALED : public Core::BShape
 	{
 	public:
+		Texture() = default;
 		Texture(int width, int height, std::vector<Color> pixels);
 		Texture(const Image& image);
 	};
