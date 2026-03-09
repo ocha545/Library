@@ -134,7 +134,7 @@ namespace Win32
 			BShape& rotationY(float r);
 			BShape& rotationZ(float r);
 			BShape& scaled(float scale);
-			DrawCommand get();
+			DrawCommand get() const;
 		};
 	}
 

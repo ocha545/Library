@@ -190,7 +190,7 @@ namespace Win32
 		command.size.h = scale * command.size.h;
 		return *this;
 	}
-	Core::DrawCommand Core::BShape::get()
+	Core::DrawCommand Core::BShape::get() const
 	{
 		return command;
 	}
