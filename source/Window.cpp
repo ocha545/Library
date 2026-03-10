@@ -56,8 +56,19 @@ namespace Win32
 			windowClass.style = CS_HREDRAW | CS_VREDRAW;
 			windowClass.lpfnWndProc = WndProc;
 			windowClass.hInstance = instance;
-			windowClass.hIcon = Core::icon;
-			windowClass.hCursor = Core::cursor;
+			if (!Core::icon.empty()) {
+				windowClass.hIcon = (HICON)LoadImageW(instance, Core::icon.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+			}
+			else {
+				windowClass.hIcon = LoadIconW(NULL, IDC_ICON);
+			}
+
+			if (!Core::cursor.empty()) {
+				windowClass.hCursor = (HICON)LoadImageW(instance, Core::cursor.c_str(), IMAGE_CURSOR, 0, 0, LR_LOADFROMFILE);
+			}
+			else {
+				windowClass.hCursor = LoadCursorW(NULL, IDC_ARROW);
+			}
 			windowClass.hbrBackground = (HBRUSH)GetStockObject(DKGRAY_BRUSH);
 			windowClass.lpszClassName = className;
 			RegisterClassExW(&windowClass);
@@ -110,8 +121,19 @@ namespace Win32
 			windowClass.style = CS_HREDRAW | CS_VREDRAW;
 			windowClass.lpfnWndProc = WndProc;
 			windowClass.hInstance = instance;
-			windowClass.hIcon = Core::icon;
-			windowClass.hCursor = Core::cursor;
+			if (!Core::icon.empty()) {
+				windowClass.hIcon = (HICON)LoadImageW(instance, Core::icon.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+			}
+			else {
+				windowClass.hIcon = LoadIconW(NULL, IDC_ICON);
+			}
+
+			if (!Core::cursor.empty()) {
+				windowClass.hCursor = (HICON)LoadImageW(instance, Core::cursor.c_str(), IMAGE_CURSOR, 0, 0, LR_LOADFROMFILE);
+			}
+			else {
+				windowClass.hCursor = LoadCursorW(NULL, IDC_ARROW);
+			}
 			windowClass.hbrBackground = (HBRUSH)GetStockObject(DKGRAY_BRUSH);
 			windowClass.lpszClassName = className.c_str();
 			RegisterClassExW(&windowClass);
@@ -151,8 +173,19 @@ namespace Win32
 			windowClass.style = CS_HREDRAW | CS_VREDRAW;
 			windowClass.lpfnWndProc = WndProc;
 			windowClass.hInstance = instance;
-			windowClass.hIcon = Core::icon;
-			windowClass.hCursor = Core::cursor;
+			if (!Core::icon.empty()) {
+				windowClass.hIcon = (HICON)LoadImageW(instance, Core::icon.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+			}
+			else {
+				windowClass.hIcon = LoadIconW(NULL, IDC_ICON);
+			}
+
+			if (!Core::cursor.empty()) {
+				windowClass.hCursor = (HICON)LoadImageW(instance, Core::cursor.c_str(), IMAGE_CURSOR, 0, 0, LR_LOADFROMFILE);
+			}
+			else {
+				windowClass.hCursor = LoadCursorW(NULL, IDC_ARROW);
+			}
 			windowClass.hbrBackground = (HBRUSH)GetStockObject(DKGRAY_BRUSH);
 			windowClass.lpszClassName = className;
 			RegisterClassExW(&windowClass);
@@ -189,8 +222,19 @@ namespace Win32
 			windowClass.style = CS_HREDRAW | CS_VREDRAW;
 			windowClass.lpfnWndProc = WndProc;
 			windowClass.hInstance = instance;
-			windowClass.hIcon = Core::icon;
-			windowClass.hCursor = Core::cursor;
+			if (!Core::icon.empty()) {
+				windowClass.hIcon = (HICON)LoadImageW(instance, Core::icon.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+			}
+			else {
+				windowClass.hIcon = LoadIconW(NULL, IDC_ICON);
+			}
+
+			if (!Core::cursor.empty()) {
+				windowClass.hCursor = (HICON)LoadImageW(instance, Core::cursor.c_str(), IMAGE_CURSOR, 0, 0, LR_LOADFROMFILE);
+			}
+			else {
+				windowClass.hCursor = LoadCursorW(NULL, IDC_ARROW);
+			}
 			windowClass.hbrBackground = (HBRUSH)GetStockObject(DKGRAY_BRUSH);
 			windowClass.lpszClassName = className.c_str();
 			RegisterClassExW(&windowClass);
@@ -264,11 +308,11 @@ namespace Win32
 
 	void Window::SetIcon(const wstring& path)
 	{
-		Core::icon = LoadIconW(NULL, path.c_str());
+		Core::icon = path;
 	}
 	void Window::SetCursor(const wstring& path)
 	{
-		Core::cursor = LoadIconW(NULL, path.c_str());
+		Core::cursor = path;
 	}
 
 	Result Window::ShowMessageBox(HWND handle, HINSTANCE instance, const wstring& title, const wstring& message, long flag)

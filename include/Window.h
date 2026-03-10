@@ -84,8 +84,8 @@ namespace Win32
 
 	namespace Core
 	{
-		static HICON icon;// = LoadIconW(NULL, IDC_ICON);
-		static HCURSOR cursor;// = LoadCursorW(NULL, IDC_ARROW);
+		static wstring icon;// = LoadIconW(NULL, IDC_ICON);
+		static wstring cursor;// = LoadCursorW(NULL, IDC_ARROW);
 
 		//表示形式
 		//[SECTION]: information
