@@ -20,7 +20,7 @@ int main()
 	std::wcout.imbue(std::locale());
 
 	Window::SetIcon(L"images/icon.ico");
-	Window::SetCursor(L"images/cursor.cur");
+//	Window::SetCursor(L"images/cursor.cur");
 	Window window{ 960, 720, L"たいとる", 10, 10 };
 	GraphicsXI::ClearColor(Color(0, 0, 60));
 	GraphicsXI gfx{ window.getHandle(), window.getInstance() };

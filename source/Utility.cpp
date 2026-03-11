@@ -269,6 +269,10 @@ namespace Win32
 		{
 			throw std::runtime_error("scaleは偶数のみ指定してください");
 		}
+		if (scale <= 0)
+		{
+			throw std::runtime_error("scaleに負の値を指定しないで下さい");
+		}
 
 		Image out{ width * scale, height * scale };
 		Color color;
