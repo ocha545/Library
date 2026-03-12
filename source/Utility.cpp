@@ -71,10 +71,10 @@ namespace Win32
 	Color operator-(const Color& base, const Color& blend)
 	{
 		return Color{
-			std::max<ubyte>(255, base.r - blend.r),
-			std::max<ubyte>(255, base.g - blend.g),
-			std::max<ubyte>(255, base.b - blend.b),
-			std::max<ubyte>(255, base.a - blend.a)
+			std::max<ubyte>(0, base.r - blend.r),
+			std::max<ubyte>(0, base.g - blend.g),
+			std::max<ubyte>(0, base.b - blend.b),
+			std::max<ubyte>(0, base.a - blend.a)
 		};
 	}
 	Color operator*(const Color& base, const Color& blend)
