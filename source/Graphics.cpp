@@ -2,43 +2,25 @@
 
 namespace Win32
 {
-	//namespace Core begin
-	//struct Core::CircleData
-	//{
-	//	XMFLOAT2 pos{};
-	//	float radius;
-	//	float edge;
-	//};
+	bool Core::UpdateConstantBuffer(ID3D11Resource* buf, const void* data, size_t size)
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedBuf{};
+		if (buf == nullptr)
+		{
+			return false;
+		}
 
-	//struct Core::Float2Size
-	//{
-	//	float w;
-	//	float h;
-	//};
+		HRESULT Hr = Core::context->Map(buf, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedBuf);
+		if (FAILED(Hr))
+		{
+			return false;
+		}
+		memcpy(mappedBuf.pData, data, size);
+		Core::context->Unmap(buf, 0);
 
-	//struct Core::Int2Size
-	//{
-	//	int w;
-	//	int h;
-	//};
+		return true;
+	}
 
-	//struct Core::DrawCommand
-	//{
-	//	ComPtr<ID3D11Buffer> vertexBuffer = nullptr;
-	//	ComPtr<ID3D11Buffer> texcoordBuffer = nullptr;
-	//	ComPtr<ID3D11Buffer> indexBuffer = nullptr;
-	//	ComPtr<ID3D11ShaderResourceView> srv = nullptr;
-	//	CommandType type = CommandType::NONE;
-	//	unsigned int indexCount = 0;
-	//	float scale = 1.0f;
-	//	float angleX = 0.0f;
-	//	float angleY = 0.0f;
-	//	float angleZ = 0.0f;
-	//	CircleData cd{};
-	//	Color rgba{ 255, 255, 255 };
-	//	XMFLOAT3 pos{ 0.0f, 0.0f, 1.0f };
-	//	Float2Size size{};
-	//};
 
 	//class BShape begin
 	ComPtr<ID3D11Buffer> Core::BShape::createBuffer(const D3D11_BUFFER_DESC* desc, const D3D11_SUBRESOURCE_DATA* data)
@@ -85,6 +67,28 @@ namespace Win32
 
 		return createBuffer(&desc, &data);
 	}
+	ComPtr<ID3D11Texture2D> Core::BShape::createTexture(const Image& image)
+	{
+		D3D11_TEXTURE2D_DESC desc{};
+		desc.Width = image.width;
+		desc.Height = image.height;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.SampleDesc.Count = 1;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		desc.CPUAccessFlags = 0;
+		desc.MiscFlags = 0;
+
+		D3D11_SUBRESOURCE_DATA data{};
+		data.pSysMem = image.rawData();
+		data.SysMemPitch = image.width * sizeof(Color);
+
+		ComPtr<ID3D11Texture2D> tmp = nullptr;
+		HRESULT Hr = Core::device->CreateTexture2D(&desc, &data, tmp.GetAddressOf());
+		return tmp;
+	}
 	ComPtr<ID3D11Texture2D> Core::BShape::createTexture(int width, int height, const std::vector<Color>& pixels)
 	{
 		D3D11_TEXTURE2D_DESC desc{};
@@ -114,6 +118,28 @@ namespace Win32
 		assert(SUCCEEDED(Hr));
 		AST_NULL(tex);
 		return tex;
+	}
+	ComPtr<ID3D11Texture2D> Core::BShape::createDynamicTexture(const Image& image)
+	{
+		D3D11_TEXTURE2D_DESC desc{};
+		desc.Width = image.width;
+		desc.Height = image.height;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.SampleDesc.Count = 1;
+		desc.Usage = D3D11_USAGE_DYNAMIC;
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		desc.MiscFlags = 0;
+
+		D3D11_SUBRESOURCE_DATA data{};
+		data.pSysMem = image.rawData();
+		data.SysMemPitch = image.width * sizeof(Color);
+
+		ComPtr<ID3D11Texture2D> tmp = nullptr;
+		HRESULT Hr = Core::device->CreateTexture2D(&desc, &data, tmp.GetAddressOf());
+		return tmp;
 	}
 	ComPtr<ID3D11ShaderResourceView> Core::BShape::createShaderResourceView(ID3D11Texture2D* tex, const D3D11_SHADER_RESOURCE_VIEW_DESC* desc)
 	{
@@ -459,6 +485,8 @@ namespace Win32
 	}
 	//class Texture end
 
+
+
 	//class Text begin
 	std::pair<std::wstring, Text::MojiType> Text::getCharImagePath(wchar_t wch)
 	{
@@ -519,45 +547,45 @@ namespace Win32
 		Image out = Image{ path };
 		if (type == MojiType::DAKUTEN)
 		{
-			if (!textMap.contains(L'゛'))//画像を読み込んでいなかったら
+			if (!Core::textMap.contains(L'゛'))//画像を読み込んでいなかったら
 			{
-				textMap.emplace(L'゛', Image{ getCharImagePath(L'゛').first });
+				Core::textMap.emplace(L'゛', Image{ getCharImagePath(L'゛').first });
 			}
-			out = out + textMap[L'゛'];
+			out = out + Core::textMap[L'゛'];
 		}
 		else if (type == MojiType::HANDAKUTEN)//画像を読み込んでいなかったら
 		{
-			if (!textMap.contains(L'゜'))
+			if (!Core::textMap.contains(L'゜'))
 			{
-				textMap.emplace(L'゜', Image{ getCharImagePath(L'゜').first });
+				Core::textMap.emplace(L'゜', Image{ getCharImagePath(L'゜').first });
 			}
-			out = out + textMap[L'゜'];
+			out = out + Core::textMap[L'゜'];
 		}
 
 		for (int i = 1; i < text.length(); i++)
 		{
 			auto [path2, type2] = getCharImagePath(text[i]);
-			if (!textMap.contains(text[i]))//画像を読み込んでいなかったら
+			if (!Core::textMap.contains(text[i]))//画像を読み込んでいなかったら
 			{
-				textMap.emplace(text[i], Image{ path2 });
+				Core::textMap.emplace(text[i], Image{ path2 });
 			}
-			out = out + textMap[text[i]];
+			out = out + Core::textMap[text[i]];
 
 			if (type2 == MojiType::DAKUTEN)
 			{
-				if (!textMap.contains(L'゛'))//画像を読み込んでいなかったら
+				if (!Core::textMap.contains(L'゛'))//画像を読み込んでいなかったら
 				{
-					textMap.emplace(L'゛', Image{ getCharImagePath(L'゛').first });
+					Core::textMap.emplace(L'゛', Image{ getCharImagePath(L'゛').first });
 				}
-				out = out + textMap[L'゛'];
+				out = out + Core::textMap[L'゛'];
 			}
 			else if (type2 == MojiType::HANDAKUTEN)
 			{
-				if (!textMap.contains(L'゜'))//画像を読み込んでいなかったら
+				if (!Core::textMap.contains(L'゜'))//画像を読み込んでいなかったら
 				{
-					textMap.emplace(L'゜', Image{ getCharImagePath(L'゜').first });
+					Core::textMap.emplace(L'゜', Image{ getCharImagePath(L'゜').first });
 				}
-				out = out + textMap[L'゜'];
+				out = out + Core::textMap[L'゜'];
 			}
 		}
 
@@ -566,17 +594,6 @@ namespace Win32
 	//class Text end
 
 	//class GraphicsXI begin
-	bool GraphicsXI::updateConstantBuffer(ID3D11Resource* buf, const void* data, size_t size)
-	{
-		D3D11_MAPPED_SUBRESOURCE mappedBuf{};
-		if (buf == nullptr) { return false; }
-		Hr = Core::context->Map(buf, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedBuf);
-		if (FAILED(Hr)) { return false; }
-		memcpy(mappedBuf.pData, data, size);
-		Core::context->Unmap(buf, 0);
-		return true;
-	}
-
 	GraphicsXI::GraphicsXI(HWND parentHdl, HINSTANCE parentIns)
 	{
 		static_assert(sizeof(Color) == 4, "Colorのサイズが4バイトではありませんでした");
@@ -885,19 +902,19 @@ namespace Win32
 			float inv255 = 1.0f / 255.0f;
 			XMFLOAT4 rgba = cmd.rgba.floats();
 
-			if (!updateConstantBuffer(Core::matrixConstantBuffer.Get(), &matrix, sizeof(matrix)))
+			if (!Core::UpdateConstantBuffer(Core::matrixConstantBuffer.Get(), &matrix, sizeof(matrix)))
 			{
 				throw std::runtime_error("行列計算で失敗しました。哀れ");
 			}
-			if (!updateConstantBuffer(Core::diffuseConstantBuffer.Get(), &rgba, sizeof(rgba)))
+			if (!Core::UpdateConstantBuffer(Core::diffuseConstantBuffer.Get(), &rgba, sizeof(rgba)))
 			{
 				throw std::runtime_error("色設定で失敗しました。哀れ");
 			}
-			if (!updateConstantBuffer(Core::circleDataConstantBuffer.Get(), &cmd.cd, sizeof(cmd.cd)))
+			if (!Core::UpdateConstantBuffer(Core::circleDataConstantBuffer.Get(), &cmd.cd, sizeof(cmd.cd)))
 			{
 				throw std::runtime_error("円を綺麗にする工程で失敗しました。哀れ");
 			}
-			if (!updateConstantBuffer(Core::drawTypeConstantBuffer.Get(), &cmd.type, sizeof(cmd.type)))
+			if (!Core::UpdateConstantBuffer(Core::drawTypeConstantBuffer.Get(), &cmd.type, sizeof(cmd.type)))
 			{
 				throw std::runtime_error("描画方式を指定する工程で失敗しました。哀れ");
 			}

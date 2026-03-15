@@ -88,13 +88,15 @@ namespace Win32
 
 		void setPixel(int x, int y, const Color& color);
 
-		Image clip(int x, int y, int width, int height) const;
+		Image clipped(int x, int y, int width, int height) const;
 
 		Image scaled(int scale) const;
 
 		size_t size() const;
 
 		std::vector<Color> data() const;
+
+		const Color* rawData() const;
 
 		void blendAddition(const Color& blend);
 	};

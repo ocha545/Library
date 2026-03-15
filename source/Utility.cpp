@@ -241,7 +241,7 @@ namespace Win32
 		colors[index] = color;
 	}
 
-	Image Image::clip(int x, int y, int width, int height) const
+	Image Image::clipped(int x, int y, int width, int height) const
 	{
 		if ((x + width) > this->width || (y + height) > this->height)
 		{
@@ -303,6 +303,11 @@ namespace Win32
 	std::vector<Color> Image::data() const
 	{
 		return colors;
+	}
+
+	const Color* Image::rawData() const
+	{
+		return colors.data();
 	}
 
 	void Image::blendAddition(const Color& blend)

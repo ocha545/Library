@@ -70,6 +70,7 @@ namespace Win32
 		MAX,
 	};
 
+	//未使用
 	enum class Log
 	{
 		Information,
@@ -186,7 +187,7 @@ namespace Win32
 
 
 
-
+	//テストよう (gemini作)
 	class LowShelfFilter {
 	private:
 		// フィルタ係数

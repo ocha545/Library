@@ -38,7 +38,6 @@ namespace Win32
 		static ComPtr<ID3D11Debug> debug = nullptr;
 		static ComPtr<IDXGISwapChain1> swapChain = nullptr;
 		static ComPtr<ID3D11RenderTargetView> backBufferView = nullptr;
-		//パイプライン
 		static ComPtr<ID3D11InputLayout> inputLayout = nullptr;
 		static ComPtr<ID3D11VertexShader> vShader = nullptr;
 		static ComPtr<ID3D11PixelShader> pShader = nullptr;
@@ -51,6 +50,8 @@ namespace Win32
 		static ComPtr<ID3D11SamplerState> samplerState = nullptr;
 		static ComPtr<ID3D11BlendState> blendState = nullptr;
 		static Color swapChainClearColor{ 128, 128, 255 };
+
+		static std::unordered_map<wchar_t, Image> textMap{};
 
 		enum class CommandType : int
 		{
@@ -79,18 +80,21 @@ namespace Win32
 		{
 			ComPtr<ID3D11Buffer> vertexBuffer = nullptr;
 			ComPtr<ID3D11Buffer> indexBuffer = nullptr;
-			ComPtr<ID3D11Buffer> texcoordBuffer = nullptr;
-			ComPtr<ID3D11ShaderResourceView> srv = nullptr;
+			ComPtr<ID3D11Buffer> texcoordBuffer;
+			ComPtr<ID3D11ShaderResourceView> srv;
+
+			CircleData cd{};
 			CommandType type = CommandType::NONE;
 			unsigned int indexCount = 0;
+
 			float scale = 1.0f;
 			float angleX = 0.0f;
 			float angleY = 0.0f;
 			float angleZ = 0.0f;
-			CircleData cd{};
 			Color rgba{ 255, 255, 255 };
 			XMFLOAT3 pos{ 0.0f, 0.0f, 1.0f };
 			Float2Size size{};
+
 			bool isUpdate = false;
 
 			bool update() const
@@ -115,8 +119,10 @@ namespace Win32
 			ComPtr<ID3D11Buffer> createVertexBuffer(const Vertex* vtxs, size_t size);
 			ComPtr<ID3D11Buffer> createTexcoordBuffer(const UV* uvs, size_t size);
 			ComPtr<ID3D11Buffer> createIndexBuffer(const Index* idxs, size_t size);
+			ComPtr<ID3D11Texture2D> createTexture(const Image& image);
 			ComPtr<ID3D11Texture2D> createTexture(int width, int height, const std::vector<Color>& pixels);
 			ComPtr<ID3D11Texture2D> createTexture(const D3D11_TEXTURE2D_DESC* desc, const D3D11_SUBRESOURCE_DATA* data);
+			ComPtr<ID3D11Texture2D> createDynamicTexture(const Image& image);
 			ComPtr<ID3D11ShaderResourceView> createShaderResourceView(ID3D11Texture2D* tex, const D3D11_SHADER_RESOURCE_VIEW_DESC* desc);
 
 		public:
@@ -136,6 +142,8 @@ namespace Win32
 			BShape& scaled(float scale);
 			DrawCommand get() const;
 		};
+
+		bool UpdateConstantBuffer(ID3D11Resource* buf, const void* data, size_t size);
 	}
 
 	class Rect SEALED : public Core::BShape
@@ -170,14 +178,11 @@ namespace Win32
 		Texture(const Image& image);
 	};
 
+
+
 	class Text
 	{
 	private:
-		inline static std::unordered_map<wchar_t, Image> textMap{};
-//		inline static std::unordered_map<wchar_t, wchar_t> dakutenTable;
-//		inline static std::unordered_map<wchar_t, wchar_t> handakutenTable;
-//		inline static std::unordered_map<wchar_t, std::wstring> symbolTable;
-//		inline static std::unordered_map<wchar_t, std::wstring> lowerTable;
 		inline static std::unordered_map<wchar_t, wchar_t> dakutenTable{
 			{ L'が', L'か' },
 			{ L'ぎ', L'き' },
@@ -314,7 +319,7 @@ namespace Win32
 		std::vector<Core::DrawCommand> cmds;
 		bool isUpdate = true;
 
-		bool updateConstantBuffer(ID3D11Resource* buf, const void* data, size_t size);
+//		bool updateConstantBuffer(ID3D11Resource* buf, const void* data, size_t size);
 	public:
 		GraphicsXI() = default;
 		GraphicsXI(const GraphicsXI&) = default;

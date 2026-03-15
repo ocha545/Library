@@ -5,7 +5,6 @@
 //#define KEYBOARD_CODE
 //#define HELPER_TEST
 //#define FILE_TEST
-//#define AudioPlayer
 
 #include<iostream>
 #include"include/Window.h"
@@ -31,30 +30,6 @@ int main()
 //	Audio audio{ L"music/audio.ogg" };
 //	Audio audio{ L"music/AIZO.opus" };
 
-//	MP3 file{ L"music/Blue.mp3", true };
-//	std::vector<short> pcm = file.getPCM();
-//	LowShelfFilter lf{}, rf{};
-//	double sampleRate = static_cast<double>(file.getInformation().SampleRate);
-//	double cutOff = 200.0;
-//	double dbGain = 6.0;
-//	double Q = 0.707;
-//	lf.updateCoefficients(sampleRate, cutOff, dbGain, Q);
-//	rf.updateCoefficients(sampleRate, cutOff, dbGain, Q);
-//	for (size_t i = 0; i < pcm.size(); i += 2)
-//	{
-//		float left = pcm[i] / 32768.0f;
-//		float right = pcm[i + 1] / 32768.0f;
-//
-//		float leftOut = lf.process(left);
-//		float rightOut = rf.process(right);
-//
-//		leftOut = std::clamp<float>(leftOut, -1.0f, 1.0f);
-//		rightOut = std::clamp<float>(rightOut, -1.0f, 1.0f);
-//
-//		pcm[i] = static_cast<short>(leftOut * 32767.0f);
-//		pcm[i + 1] = static_cast<short>(rightOut * 32767.0f);
-//	}
-//	Audio audio{ pcm, file.getInformation() };
 	window.show();
 	input.Acquire();
 	audio.Play();
@@ -81,7 +56,6 @@ int main()
 
 		gfx.clear();
 		gfx.draw(image.rotationX(theta).rotationZ(theta).get());
-//		gfx.draw(coverImage.color(std::clamp(r, 0, 255), 0, 0).get());
 		gfx.present();
 	}
 
@@ -89,9 +63,6 @@ int main()
 
 	return 0;
 }
-
-
-
 
 
 #ifdef AUDIO_CODE
@@ -342,60 +313,6 @@ int main()
 	system("pause");
 
 	return 0;
-}
-
-#endif
-
-#ifdef AudioPlayer
-
-using namespace UsingAudio;
-using namespace UsingWindow;
-using namespace UsingGraphics;
-
-const std::wstring audiofile = L"music/Blue.mp3";
-const int loopCount = 0;
-
-int main()
-{
-	std::locale::global(std::locale("ja_JP.UTF-8"));
-	std::wcout.imbue(std::locale());
-	Window window{ 800, 600, L"Audio Player!" };
-	GraphicsXI::ClearColor(Win32_CPP::Color(0));
-	GraphicsXI gfx{ window.getHandle(), window.getInstance() };
-	Audio audio{ audiofile, loopCount };
-	AudioMetaData audioMetaData = audio.MetaData();
-	window.show();
-	audio.Play();
-
-	Texture audioInfo[] =
-	{
-		Text::GetTextImage(L"けいしき   " + audio.FormatString()),
-		Text::GetTextImage(L"あるばむ   " + audioMetaData.album),
-		Text::GetTextImage(L"あーてぃすと " + audioMetaData.artist),
-		Text::GetTextImage(L"こめんと   " + audioMetaData.comment),
-		Text::GetTextImage(L"じゃんる   " + audioMetaData.genre),
-		Text::GetTextImage(L"たいとる   " + audioMetaData.title),
-		Text::GetTextImage(L"とらっく   " + std::to_wstring(audioMetaData.track)),
-		Text::GetTextImage(L"いやー    " + std::to_wstring(audioMetaData.year))
-	};
-	for (auto& info : audioInfo)
-	{
-		info.scaled(5.0f).color(Color(255));
-	}
-
-	while (window.update())
-	{
-		gfx.clear();
-
-		for (int i = 0; i < _countof(audioInfo); i++)
-		{
-			gfx.draw(
-				audioInfo[i].position(10.0f, 10.0f + i * audioInfo[i].height() * 5.0f + i * 8.0f).get()
-			);
-		}
-
-		gfx.present();
-	}
 }
 
 #endif
