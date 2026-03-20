@@ -58,6 +58,7 @@ namespace Win32
 			NONE,
 			SHAPE,
 			TEXTURE,
+			LINE,
 		};
 
 		struct CircleData
@@ -158,7 +159,7 @@ namespace Win32
 	{
 	public:
 		//未使用
-		Line(int thickness, int length);
+		Line(int startX, int startY, int endX, int endY);
 	};
 
 	class Circle SEALED : public Core::BShape

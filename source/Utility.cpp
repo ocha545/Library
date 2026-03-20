@@ -89,6 +89,10 @@ namespace Win32
 			<< ", A:" << (int)color.a;
 		return os;
 	}
+	bool operator==(const Color& left, const Color& right)
+	{
+		return ((left.r == right.r) && (left.g == right.g) && (left.b == right.b) && (left.a == right.a));
+	}
 
 	Color Color::operator+=(const Color& blend)
 	{
@@ -289,6 +293,21 @@ namespace Win32
 						out.setPixel(x * scale + xs, y * scale + ys, color);
 					}
 				}
+			}
+		}
+
+		return out;
+	}
+
+	Image Image::swapped(const Color& target, const Color& color) const
+	{
+		Image out = Image(*this);
+
+		for (auto& pixel : out.colors)
+		{
+			if (pixel == target)
+			{
+				pixel = color;
 			}
 		}
 

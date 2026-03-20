@@ -274,10 +274,26 @@ namespace Win32
 	//class Rect end
 
 	//class Line begin
-	Line::Line(int thickness, int length)
+	Line::Line(int startX, int startY, int endX, int endY)
 	{
-		float thickness_f = static_cast<float>(thickness);
-		float length_f = static_cast<float>(length);
+		float startX_f = static_cast<float>(startX);
+		float startY_f = static_cast<float>(startY);
+		float endX_f = static_cast<float>(startX);
+		float endY_f = static_cast<float>(endY);
+		command.type = Core::CommandType::LINE;
+
+		Vertex vertices[] = {
+			{ startX_f, startY_f, 1.0f },
+			{   endX_f,   endY_f, 1.0f }
+		};
+
+		command.vertexBuffer = createVertexBuffer(vertices, sizeof(vertices));
+
+		Index indices[] = {
+			0, 1
+		};
+		command.indexCount = _countof(indices);
+		command.indexBuffer = createIndexBuffer(indices, sizeof(indices));
 	}
 
 	//class Circle begin
@@ -849,7 +865,6 @@ namespace Win32
 	void GraphicsXI::firstSetting()
 	{
 		Core::context->IASetInputLayout(Core::inputLayout.Get());
-		Core::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		Core::context->VSSetShader(Core::vShader.Get(), nullptr, NULL);
 		Core::context->PSSetShader(Core::pShader.Get(), nullptr, NULL);
 		UINT registerB0 = 0;//座標などの行列データ
@@ -867,12 +882,6 @@ namespace Win32
 	}
 	void GraphicsXI::present()
 	{
-		//const auto&にしたい
-		//cmd.endUpdate()でメンバ書き換えを行ってるのでconstにできない
-		//if (isUpdate)
-		//	firstSetting();
-		//	isUpdate = false;
-		//}
 		if (isUpdate)
 		{
 			firstSetting();
@@ -880,7 +889,11 @@ namespace Win32
 		}
 		for (auto& cmd : cmds)
 		{
-
+			if (cmd.isUpdate)
+			{
+				firstSetting();
+				cmd.endUpdate();
+			}
 			//行列計算とか
 			float cx = -cmd.size.w / 2.0f;
 			float cy = -cmd.size.h / 2.0f;
@@ -926,11 +939,29 @@ namespace Win32
 			};
 			UINT strides[] = { sizeof(XMFLOAT3), sizeof(XMFLOAT2) };
 			UINT offsets[] = { 0, 0 };
+			if (cmd.type == Core::CommandType::LINE)
+			{
+				Core::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+//				std::cout << "いあ\n";
+			}
+			else
+			{
+				Core::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			}
 			Core::context->IASetVertexBuffers(0, _countof(buffers), buffers, strides, offsets);
 			Core::context->IASetIndexBuffer(cmd.indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 			UINT registerT0 = 0;
 			Core::context->PSSetShaderResources(registerT0, 1, cmd.srv.GetAddressOf());
-			Core::context->DrawIndexed(cmd.indexCount, 0, 0);
+
+			if (cmd.type == Core::CommandType::LINE)
+			{
+				Core::context->Draw(2, 0);
+//				std::cout << "どろ\n";
+			}
+			else
+			{
+				Core::context->DrawIndexed(cmd.indexCount, 0, 0);
+			}
 		}
 
 		Core::swapChain->Present(1, 0);

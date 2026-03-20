@@ -39,6 +39,7 @@ namespace Win32
 		friend Color operator-(const Color& base, const Color& blend);
 		friend Color operator*(const Color& base, const Color& blend);
 		friend std::ostream& operator<<(std::ostream& os, const Color& color);
+		friend bool operator==(const Color& left, const Color& right);
 		Color operator+=(const Color& blend);
 		Color operator-=(const Color& blend);
 		XMFLOAT4 floats() const;
@@ -91,6 +92,8 @@ namespace Win32
 		Image clipped(int x, int y, int width, int height) const;
 
 		Image scaled(int scale) const;
+
+		Image swapped(const Color& target, const Color& color) const;
 
 		size_t size() const;
 
