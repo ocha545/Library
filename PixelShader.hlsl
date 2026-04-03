@@ -28,6 +28,7 @@ SamplerState Sampler : register(s0);
 
 #define TYPE_SHAPE 1
 #define TYPE_TEXTURE 2
+#define TYPE_LINE 3
 
 float4 psMain(PS_IN i) : SV_TARGET
 {
@@ -39,6 +40,11 @@ float4 psMain(PS_IN i) : SV_TARGET
 	{
 		return Texture.Sample(Sampler, i.uv) * Diffuse;
 //		return float4(i.uv.x, i.uv.y, 0, 1);
+	}
+	else if(Type == TYPE_LINE)
+	{
+//		return Diffuse;
+		return float4(1, 0, 0, 1);
 	}
 	else
 	{

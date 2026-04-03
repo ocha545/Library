@@ -120,6 +120,7 @@ namespace Win32
 
 	public:
 		WAVE(const std::wstring& path, bool extract);
+		WAVE(int sampleRate, int channels);
 		~WAVE();
 		operator bool();
 		const std::vector<short> getPCM() const;

@@ -10,14 +10,17 @@
 
 namespace Win32
 {
-	//RGBA値のエイリアスです
-//	using ubyte = unsigned char;
-
 	using DirectX::XMFLOAT4;
 	using std::wstring;
 	using std::wstring_view;
 	using ubyte = unsigned char;
 	constexpr float inv255 = 1.0f / 255.0f;
+
+	enum class Filter
+	{
+		GrayScale,
+		Mosaic
+	};
 
 	struct Color
 	{
@@ -94,6 +97,15 @@ namespace Win32
 		Image scaled(int scale) const;
 
 		Image swapped(const Color& target, const Color& color) const;
+
+		Image filtered(Filter mode) const;
+
+		template<typename Func>
+		Image filtered(Func mode) const;
+
+		Image flipV() const;
+
+		Image flipH() const;
 
 		size_t size() const;
 

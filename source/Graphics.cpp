@@ -840,7 +840,7 @@ namespace Win32
 		}
 	}
 
-	void GraphicsXI::ClearColor(const Color& color)
+	void GraphicsXI::SetClearColor(const Color& color)
 	{
 		Core::swapChainClearColor = color;
 	}

@@ -29,7 +29,6 @@ namespace Win32
 	using UV = DirectX::XMFLOAT2;
 
 	using std::wstring;
-//	using refstr = const std::wstring&;
 
 	namespace Core
 	{
@@ -320,13 +319,14 @@ namespace Win32
 		std::vector<Core::DrawCommand> cmds;
 		bool isUpdate = true;
 
-//		bool updateConstantBuffer(ID3D11Resource* buf, const void* data, size_t size);
+		LARGE_INTEGER lint;
+
 	public:
 		GraphicsXI() = default;
 		GraphicsXI(const GraphicsXI&) = default;
 		GraphicsXI(HWND parentHdl, HINSTANCE parentIns);
 
-		static void ClearColor(const Color& color);
+		static void SetClearColor(const Color& color);
 
 		void clear();
 		void firstSetting();

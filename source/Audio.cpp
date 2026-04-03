@@ -245,6 +245,12 @@ namespace Win32
 			}
 		}
 	}
+	WAVE::WAVE(int sampleRate, int channels)
+	{
+		this->info.SampleRate = sampleRate;
+		this->info.Channels = channels;
+	}
+
 	WAVE::~WAVE()
 	{
 		if (isRead)

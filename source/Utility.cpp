@@ -4,7 +4,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include"../include/third_party/stb/stb_image.h"
 #pragma warning(pop)
-
 #include"../include/Utility.h"
 
 namespace Win32
@@ -230,7 +229,7 @@ namespace Win32
 		size_t index = static_cast<size_t>(x + this->width * y);
 		if (index >= colors.size() || x < 0 || y < 0)
 		{
-			return Color(255);
+			return Color(255, 0);
 		}
 		return colors[index];
 	}
@@ -269,10 +268,6 @@ namespace Win32
 
 	Image Image::scaled(int scale) const
 	{
-		if ((scale & 1) != 0)
-		{
-			throw std::runtime_error("scaleは偶数のみ指定してください");
-		}
 		if (scale <= 0)
 		{
 			throw std::runtime_error("scaleに負の値を指定しないで下さい");
@@ -312,6 +307,62 @@ namespace Win32
 		}
 
 		return out;
+	}
+
+	Image Image::filtered(Filter mode) const
+	{
+		Image out{ *this };
+
+		switch (mode)
+		{
+		case Filter::GrayScale:
+			for (auto& rgb : out.colors)
+			{
+				int average = std::min<ubyte>(((rgb.r + rgb.g + rgb.b) / 3), 0xff);
+				rgb.r = average;
+				rgb.g = average;
+				rgb.b = average;
+			}
+			break;
+
+		case Filter::Mosaic:
+			break;
+		}
+
+		return out;
+	}
+
+	template<typename Func>
+	Image Image::filtered(Func mode) const
+	{
+		Image out{ *this };
+
+		mode(out);
+
+		return out;
+	}
+
+	Image Image::flipV() const
+	{
+		Image out{ *this };
+
+		//std::reverse(out.colors.begin(), out.colors.end());
+
+		for (int x = 0; x < width; x++)
+		{
+			for (int y = 0, v = height; y < height && v > 0; y++, v++)
+			{
+				Color tmp = out.getPixel(x, y);
+				out.setPixel(x, v, tmp);
+			}
+		}
+
+		return out;
+	}
+
+	Image Image::flipH() const
+	{
+		return Image{};
 	}
 
 	size_t Image::size() const

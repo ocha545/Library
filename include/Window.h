@@ -102,6 +102,7 @@ namespace Win32
 		HINSTANCE instance;
 
 	public:
+		Window(int w, int h, const wstring& title);
 		Window(int w, int h, const wstring& title, Position position);
 		Window(int w, int h, const wstring& title, Position position, const wstring& className);
 		Window(int w, int h, const wstring& title, int x, int y);
@@ -114,17 +115,27 @@ namespace Win32
 
 		HWND getHandle() const;
 		HINSTANCE getInstance() const;
+
+		/// Windowクラスのインスタンスを親としてメッセージボックスを表示します
 		Result showMessageBox(const wstring& title, const wstring& message, long flag) const;
+
+		/// Windowクラスのインスタンスを親としてメッセージボックスを表示します
+		/// flagはIcon::Information | Button::Okとしています
 		Result showMessageBoxOk(const wstring& title, const wstring& message) const;
+
+		/// Windowクラスのインスタンスを親としてメッセージボックスを表示します
+		/// flagはIcon::Information | Button::YesNoとしています
 		Result showMessageBoxYesNo(const wstring& title, const wstring& message) const;
 
+
+		/// カーソル画像をico形式で設定します
 		static void SetIcon(const wstring& path);
+
+		/// カーソル画像をcur形式で設定します
 		static void SetCursor(const wstring& path);
 
 		static Result ShowMessageBox(HWND handle, HINSTANCE instance, const wstring& title, const wstring& message, long flag);
 		static Result ShowMessageBox(const wstring& title, const wstring& message, long flag);
-//		static Result ShowToastMessage(HWND handle, HINSTANCE instance, const wstring& info, const wstring& title, const wstring& tip);
-//		static Result ShowToastMessage(const wstring& info, const wstring& title, const wstring& tip);
 	};
 }
 
