@@ -100,9 +100,6 @@ namespace Win32
 
 		Image filtered(Filter mode) const;
 
-		template<typename Func>
-		Image filtered(Func mode) const;
-
 		Image flipV() const;
 
 		Image flipH() const;
@@ -114,6 +111,18 @@ namespace Win32
 		const Color* rawData() const;
 
 		void blendAddition(const Color& blend);
+
+		void encodePNG(const wstring_view fileName) const;
+		void encodePNG(const wstring_view fileName, bool overWrite) const;
+
+		void encodeJPG(const wstring_view fileName) const;
+		void encodeJPG(const wstring_view fileName, bool overWrite) const;
+
+		void encodeBMP(const wstring_view fileName) const;
+		void encodeBMP(const wstring_view fileName, bool overWrite) const;
+
+		void encodeTGA(const wstring_view fileName) const;
+		void encodeTGA(const wstring_view fileName, bool overWrite) const;
 	};
 }
 

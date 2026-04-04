@@ -3,6 +3,8 @@
 #pragma warning(disable: 26819)//switch ラベルどうしの間に、注釈の付いていないフォールスルーがあります (es.78)。
 #define STB_IMAGE_IMPLEMENTATION
 #include"../include/third_party/stb/stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include"../include/third_party/stb/stb_image_write.h"
 #pragma warning(pop)
 #include"../include/Utility.h"
 
@@ -332,28 +334,19 @@ namespace Win32
 		return out;
 	}
 
-	template<typename Func>
-	Image Image::filtered(Func mode) const
-	{
-		Image out{ *this };
-
-		mode(out);
-
-		return out;
-	}
-
 	Image Image::flipV() const
 	{
 		Image out{ *this };
 
-		//std::reverse(out.colors.begin(), out.colors.end());
-
-		for (int x = 0; x < width; x++)
+		for (int y = 0; y < (height >> 1); y++)
 		{
-			for (int y = 0, v = height; y < height && v > 0; y++, v++)
+			for (int x = 0; x < width; x++)
 			{
-				Color tmp = out.getPixel(x, y);
-				out.setPixel(x, v, tmp);
+				Color topColor = out.getPixel(x, y);
+				Color bottomColor = out.getPixel(x, height - y);
+
+				out.setPixel(x, y, bottomColor);
+				out.setPixel(x, height - y, topColor);
 			}
 		}
 
@@ -362,7 +355,21 @@ namespace Win32
 
 	Image Image::flipH() const
 	{
-		return Image{};
+		Image out{ *this };
+
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < (width >> 1); x++)
+			{
+				Color leftColor = out.getPixel(x, y);
+				Color rightColor = out.getPixel(width - x, y);
+
+				out.setPixel(x, y, rightColor);
+				out.setPixel(width - x, y, leftColor);
+			}
+		}
+
+		return out;
 	}
 
 	size_t Image::size() const
@@ -385,6 +392,67 @@ namespace Win32
 		for (auto& pixel : colors)
 		{
 			pixel += blend;
+		}
+	}
+
+
+	void Image::encodePNG(const wstring_view fileName) const
+	{
+		if (!std::filesystem::exists(fileName))
+		{
+			stbi_write_png(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
+		}
+	}
+	void Image::encodePNG(const wstring_view fileName, bool overWrite) const
+	{
+		if (overWrite)
+		{
+			stbi_write_png(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
+		}
+	}
+
+	void Image::encodeJPG(const wstring_view fileName) const
+	{
+		if (!std::filesystem::exists(fileName))
+		{
+			stbi_write_jpg(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
+		}
+	}
+	void Image::encodeJPG(const wstring_view fileName, bool overWrite) const
+	{
+		if (overWrite)
+		{
+			stbi_write_jpg(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
+		}
+	}
+
+	void Image::encodeBMP(const wstring_view fileName) const
+	{
+		if (!std::filesystem::exists(fileName))
+		{
+			stbi_write_bmp(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
+		}
+	}
+	void Image::encodeBMP(const wstring_view fileName, bool overWrite) const
+	{
+		if (overWrite)
+		{
+			stbi_write_bmp(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
+		}
+	}
+
+	void Image::encodeTGA(const wstring_view fileName) const
+	{
+		if (!std::filesystem::exists(fileName))
+		{
+			stbi_write_tga(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
+		}
+	}
+	void Image::encodeTGA(const wstring_view fileName, bool overWrite) const
+	{
+		if (overWrite)
+		{
+			stbi_write_tga(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
 		}
 	}
 	//class Image end

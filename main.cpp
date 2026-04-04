@@ -1,10 +1,11 @@
 ﻿#ifdef _DEBUG
 //#define AUDIO_CODE
-//#define GRAPHICS_CODE
+#define GRAPHICS_CODE
 //#define WINDOW_CODE
 //#define KEYBOARD_CODE
 //#define HELPER_TEST
 //#define FILE_TEST
+#if 0
 
 #include<iostream>
 #include"include/Window.h"
@@ -32,7 +33,7 @@ int main()
 
 	window.show();
 	input.Acquire();
-	audio.Play();
+//	audio.Play();
 	auto coverImage = Texture{ audio.MetaData().jacket };
 	coverImage.scaled(0.5f);
 
@@ -63,7 +64,7 @@ int main()
 
 	return 0;
 }
-
+#endif
 
 #ifdef AUDIO_CODE
 #include<crtdbg.h>
@@ -136,23 +137,20 @@ int main()
 #endif
 
 #ifdef GRAPHICS_CODE
+#include"include/Window.h"
+#include"include/Graphics.h"
 #include<random>
-
-using namespace UsingAudio;
-using namespace UsingWindow;
-using namespace UsingGraphics;
-using namespace UsingDevice;
+using namespace Win32;
 
 int main()
 {
 	std::random_device random;
 
-	Window window{ 960, 720, L"たいとる☺" };
-//	GraphicsXI::ClearColor(Color(0, 0, 60));
-	GraphicsXI::ClearColor(Color(160));
+	Window::SetIcon(L"images/icon.ico");
+	Window window{ 960, 720, L"たいとる☺", Position::Centering };
+	GraphicsXI::ClearColor(Color(40));
 	GraphicsXI graphics{ window.getHandle(), window.getInstance() };
 
-	window.setIcon(L"images/icon.ico");
 	window.show();
 
 	Rect rect{ 100, 100 };
@@ -167,20 +165,10 @@ int main()
 	Circle circle{ 80 };
 	circle.position(600, 500).color(255, 0, 0);
 
-
 	Image image{ L"images/yno.png" };
 	std::wstring moji = L"やったぜ ぴょぴょぉん!";
-	Image text = Text::GetTextImage(moji);
 	Texture texture1{ image };
-	Texture texture2{ text };
-	Texture texture3{ Text::GetTextImage(L"!?:;<>{}[]()'&%$#,.|~+-*/=") };
-	texture3.scaled(3.0f);
-	Texture texture4{ Text::GetTextImage(L"abcdefghijklmnopqrstuvwxyz") };
-	texture4.scaled(3.0f);
-	Texture texture5{ Text::GetTextImage(L"ABCDEFGHIJKLMNOPQRSTUVWXYZ") };
-	texture5.scaled(3.0f);
-
-	texture2.position(100.0f, 600.0f);
+	Texture text{ Text::GetTextImage(moji).swapped(Color(0), Color(255)).scaled(4)};
 
 	while (window.update())
 	{
@@ -194,15 +182,15 @@ int main()
 			std::cout << "Intersect";
 		}
 
-		graphics.draw(rect.position(x, y).get());
-		graphics.draw(rect2.rotationZ(angle * 3).get());
-		graphics.draw(circle.get());
-		graphics.draw(texture2.scaled(5.0f).get());
-		graphics.draw(texture3.position(10.0f, 0.0f).get());
-		graphics.draw(texture4.position(10.0f, 21.0f).get());
-		graphics.draw(texture5.position(10.0f, 52.0f).get());
+//		graphics.draw(rect.position(x, y).get());
+//		graphics.draw(rect2.rotationZ(angle * 3).get());
+//		graphics.draw(circle.get());
+		graphics.draw(texture1.get());
+		graphics.draw(text.color(255, 0, 0).get());
 		graphics.present();
 	}
+
+	window.close();
 }
 
 #endif
