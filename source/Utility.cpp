@@ -320,7 +320,7 @@ namespace Win32
 		case Filter::GrayScale:
 			for (auto& rgb : out.colors)
 			{
-				int average = std::min<ubyte>(((rgb.r + rgb.g + rgb.b) / 3), 0xff);
+				int average = (rgb.r + rgb.g + rgb.b) / 3;
 				rgb.r = average;
 				rgb.g = average;
 				rgb.b = average;
@@ -329,6 +329,16 @@ namespace Win32
 
 		case Filter::Mosaic:
 			break;
+
+		case Filter::Invert:
+			for (auto& rgb : out.colors)
+			{
+				rgb.r = 255 - rgb.r;
+				rgb.g = 255 - rgb.g;
+				rgb.b = 255 - rgb.b;
+			}
+			break;
+
 		}
 
 		return out;
@@ -395,7 +405,6 @@ namespace Win32
 		}
 	}
 
-
 	void Image::encodePNG(const wstring_view fileName) const
 	{
 		if (!std::filesystem::exists(fileName))
@@ -403,6 +412,7 @@ namespace Win32
 			stbi_write_png(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
 		}
 	}
+
 	void Image::encodePNG(const wstring_view fileName, bool overWrite) const
 	{
 		if (overWrite)
@@ -418,6 +428,7 @@ namespace Win32
 			stbi_write_jpg(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
 		}
 	}
+
 	void Image::encodeJPG(const wstring_view fileName, bool overWrite) const
 	{
 		if (overWrite)
@@ -433,6 +444,7 @@ namespace Win32
 			stbi_write_bmp(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
 		}
 	}
+
 	void Image::encodeBMP(const wstring_view fileName, bool overWrite) const
 	{
 		if (overWrite)
@@ -448,6 +460,7 @@ namespace Win32
 			stbi_write_tga(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
 		}
 	}
+
 	void Image::encodeTGA(const wstring_view fileName, bool overWrite) const
 	{
 		if (overWrite)

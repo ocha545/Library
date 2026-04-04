@@ -19,7 +19,8 @@ namespace Win32
 	enum class Filter
 	{
 		GrayScale,
-		Mosaic
+		Mosaic,
+		Invert
 	};
 
 	struct Color
