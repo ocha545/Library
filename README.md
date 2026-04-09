@@ -18,7 +18,9 @@ using namespace Win32;
 ## Trouble Shooting
 - Q.例外でたよ！　A.原因と解決法
 
-
+<br>
+<br>
+<br>
 
 
 
