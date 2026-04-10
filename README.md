@@ -1,3 +1,52 @@
+まだ途中です^^
+# Library
+Win32APIや、DirectX11を使用したライブラリです。
+
+## Requirement
+- Windows Vista 以降のバージョン
+- Visual Studio 2022(Mingwなどのコンパイラーはテストしていません)
+
+## Usage
+ライブラリを任意のディレクトリにクローンし、ReleaseとDebugのどちらもビルドしてください。
+```C++
+#include"include/Window.h"
+using namespace Win32;
+
+コード例...
+```
+
+## Trouble Shooting
+- Q.例外でたよ！　A.原因と解決法
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
 てすと！
 
 # **ある機能**
