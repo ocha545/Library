@@ -19,11 +19,6 @@ namespace Win32
 
 	namespace Convert
 	{
-		[[deprecated]]
-		const wstring Old_WideStr(const string& mbstr, const wstring& emptyTxt);
-		[[deprecated]]
-		const string Old_MultiByteStr(const wstring& widestr, const string& emptyTxt);
-
 		const wstring WideStr(const string_view mb);
 		const string MultiByteStr(const wstring_view wide);
 	}

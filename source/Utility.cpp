@@ -268,30 +268,45 @@ namespace Win32
 		return Image{ width, height, out };
 	}
 
+	//マイナスの値を指定すると縮小します←嘘です
 	Image Image::scaled(int scale) const
 	{
+		Image out;
 		if (scale <= 0)
 		{
-			throw std::runtime_error("scaleに負の値を指定しないで下さい");
-		}
+			out = Image{ width * scale, height * scale };
 
-		Image out{ width * scale, height * scale };
-		Color color;
+			Color color;
 
-		for (int y = 0; y < height; y++)
-		{
-			for (int x = 0; x < width; x++)
+			for (int y = 0; y < out.height; y++)
 			{
-				color = this->getPixel(x, y);
-				for (int xs = 0; xs < scale; xs++)
+				for (int x = 0; x < out.width; x++)
 				{
-					for (int ys = 0; ys < scale; ys++)
+
+				}
+			}
+		}
+		else
+		{
+			out = Image{ width * scale, height * scale };
+			Color color;
+
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < width; x++)
+				{
+					color = this->getPixel(x, y);
+					for (int xs = 0; xs < scale; xs++)
 					{
-						out.setPixel(x * scale + xs, y * scale + ys, color);
+						for (int ys = 0; ys < scale; ys++)
+						{
+							out.setPixel(x * scale + xs, y * scale + ys, color);
+						}
 					}
 				}
 			}
 		}
+
 
 		return out;
 	}
@@ -339,6 +354,8 @@ namespace Win32
 			}
 			break;
 
+		case Filter::Noise:
+			break;
 		}
 
 		return out;
@@ -395,6 +412,12 @@ namespace Win32
 	const Color* Image::rawData() const
 	{
 		return colors.data();
+	}
+
+	void Image::free()
+	{
+		colors.clear();
+		colors.shrink_to_fit();
 	}
 
 	void Image::blendAddition(const Color& blend)

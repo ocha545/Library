@@ -6,6 +6,7 @@
 #include<format>//テキスト整形
 #include<filesystem>//存在確認
 #include<DirectXMath.h>//XMFLOAT4
+#include<random>//乱数
 #include"Helper.h"
 
 namespace Win32
@@ -20,7 +21,8 @@ namespace Win32
 	{
 		GrayScale,
 		Mosaic,
-		Invert
+		Invert,
+		Noise
 	};
 
 	struct Color
@@ -111,18 +113,24 @@ namespace Win32
 
 		const Color* rawData() const;
 
+		void free();
+
 		void blendAddition(const Color& blend);
 
 		void encodePNG(const wstring_view fileName) const;
+
 		void encodePNG(const wstring_view fileName, bool overWrite) const;
 
 		void encodeJPG(const wstring_view fileName) const;
+
 		void encodeJPG(const wstring_view fileName, bool overWrite) const;
 
 		void encodeBMP(const wstring_view fileName) const;
+
 		void encodeBMP(const wstring_view fileName, bool overWrite) const;
 
 		void encodeTGA(const wstring_view fileName) const;
+
 		void encodeTGA(const wstring_view fileName, bool overWrite) const;
 	};
 }

@@ -14,8 +14,12 @@
 - Rect
 - Circle
 - Texture
-- Image
 - Text(staticのみ)
+### Image
+- FIlter
+- - GrayScale
+- - Mosaic(使えない)
+- - Invert
 
 # Audio (XAudio2)
 ## Class

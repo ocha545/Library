@@ -319,7 +319,7 @@ namespace Win32
 		std::vector<Core::DrawCommand> cmds;
 		bool isUpdate = true;
 
-		LARGE_INTEGER lint;
+		LARGE_INTEGER lint{};
 
 	public:
 		GraphicsXI() = default;

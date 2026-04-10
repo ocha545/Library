@@ -15,7 +15,7 @@ int main()
 	};
 	Texture images[] =
 	{
-		Image{L"images/sm64.png"}.filtered(Filter::Invert).flipV(),
+		Image{L"images/sm64.png"}.filtered(Filter::Noise).scaled(-2),
 		Image{L"images/sm64.png"}.filtered(Filter::GrayScale)
 	};
 
