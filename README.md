@@ -5,15 +5,15 @@ Win32APIや、DirectX11を使用したライブラリです。
 ## Requirement
 - Windows Vista 以降のバージョン
 - Visual Studio 2022(Mingwなどのコンパイラーはテストしていません)
+- TagLib v2.2.1
+- opusfile v0.12
+- opus v1.5.2
+- libvorbis v1.3.7
+- libogg
 
-## Usage
-ライブラリを任意のディレクトリにクローンし、ReleaseとDebugのどちらもビルドしてください。
-```C++
-#include"include/Window.h"
-using namespace Win32;
-
-コード例...
-```
+## Description
+- このライブラリではワイド文字を使用しており、マルチバイトは直接サポートしていません。<br>Convert名前空間の関数からワイド文字に変換してください。
+- このライブラリでは、C++20の機能を使用しています。<br>C++20以外のバージョンでのコンパイルは対応していません。
 
 ## Trouble Shooting
 - Q.例外でたよ！　A.原因と解決法
