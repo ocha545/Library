@@ -25,6 +25,14 @@ namespace Win32
 		Noise
 	};
 
+	enum class ImageFormat
+	{
+		PNG,
+		JPEG,
+		BMP,
+		TGA
+	};
+
 	struct Color
 	{
 	public:
@@ -44,10 +52,11 @@ namespace Win32
 		friend Color operator+(const Color& base, const Color& blend);
 		friend Color operator-(const Color& base, const Color& blend);
 		friend Color operator*(const Color& base, const Color& blend);
-		friend std::ostream& operator<<(std::ostream& os, const Color& color);
-		friend bool operator==(const Color& left, const Color& right);
 		Color operator+=(const Color& blend);
 		Color operator-=(const Color& blend);
+		Color operator*=(const Color& blend);
+		friend bool operator==(const Color& left, const Color& right);
+		friend std::ostream& operator<<(std::ostream& os, const Color& color);
 		XMFLOAT4 floats() const;
 		static Color IntHEX(unsigned int hex);
 	};
@@ -115,23 +124,7 @@ namespace Win32
 
 		void free();
 
-		void blendAddition(const Color& blend);
-
-		void encodePNG(const wstring_view fileName) const;
-
-		void encodePNG(const wstring_view fileName, bool overWrite) const;
-
-		void encodeJPG(const wstring_view fileName) const;
-
-		void encodeJPG(const wstring_view fileName, bool overWrite) const;
-
-		void encodeBMP(const wstring_view fileName) const;
-
-		void encodeBMP(const wstring_view fileName, bool overWrite) const;
-
-		void encodeTGA(const wstring_view fileName) const;
-
-		void encodeTGA(const wstring_view fileName, bool overWrite) const;
+		void encode(const wstring_view fileName, ImageFormat format, bool overWrite) const;
 	};
 }
 

@@ -12,52 +12,47 @@ namespace Win32
 {
 	//struct Color begin
 	Color::Color(ubyte r, ubyte g, ubyte b) : 
-		r(std::min<ubyte>(r, 0xff)),
-		g(std::min<ubyte>(g, 0xff)),
-		b(std::min<ubyte>(b, 0xff)),
-		a(std::min<ubyte>(0xff, 0xff))
+		r(r), g(g), b(b), a(0xff)
 	{
 	}
 	Color::Color(ubyte r, ubyte g, ubyte b, ubyte a) :
-		r(std::min<ubyte>(r, 0xff)),
-		g(std::min<ubyte>(g, 0xff)),
-		b(std::min<ubyte>(b, 0xff)),
-		a(std::min<ubyte>(a, 0xff))
+		r(r), g(g), b(b), a(a)
 	{
 	}
 	Color::Color(ubyte gs) :
-		r(std::min<ubyte>(gs, 0xff)),
-		g(std::min<ubyte>(gs, 0xff)),
-		b(std::min<ubyte>(gs, 0xff)),
-		a(std::min<ubyte>(0xff, 0xff))
+		r(gs),
+		g(gs),
+		b(gs),
+		a(0xff)
 	{
 	}
 	Color::Color(ubyte gs, ubyte alpha) : 
-		r(std::min<ubyte>(gs, 0xff)),
-		g(std::min<ubyte>(gs, 0xff)),
-		b(std::min<ubyte>(gs, 0xff)),
-		a(std::min<ubyte>(alpha, 0xff))
+		r(gs),
+		g(gs),
+		b(gs),
+		a(alpha)
 	{
 	}
 	Color::Color(const wstring& hex)
 	{
-		wstring outHex;
-		outHex.resize(hex.size());
-		for (int i = 0; i < hex.size(); i++)
+		if (hex.length() < 7)
 		{
-			outHex[i] = std::tolower(hex[i]);
+			throw std::invalid_argument("カラーコードの形式が無効です(#RRGGBBの形式で入力してください)");
 		}
 
-		ubyte rgb[3]{};
-		for (int i = 0; i < 3; i++)
-		{
-			rgb[i] = std::stoi(hex.substr(1 + i * 2, 2), nullptr, 16);
-		}
+		wstring hexDigit = hex.substr(1);
 
-		this->r = rgb[0];
-		this->g = rgb[1];
-		this->b = rgb[2];
-		this->a = 0xff;
+		try
+		{
+			r = std::stoi(hexDigit.substr(0, 2), nullptr, 16);
+			g = std::stoi(hexDigit.substr(2, 2), nullptr, 16);
+			b = std::stoi(hexDigit.substr(4, 2), nullptr, 16);
+			a = 0xff;
+		}
+		catch (std::exception& e)
+		{
+			throw  std::invalid_argument(std::format("カラーコードのパースに失敗しました:{}", e.what()));
+		}
 	}
 
 	Color operator+(const Color& base, const Color& blend)
@@ -80,8 +75,33 @@ namespace Win32
 	}
 	Color operator*(const Color& base, const Color& blend)
 	{
-		return Color{};
+		return Color{
+			static_cast<ubyte>((base.r * blend.r) / 0xff),
+			static_cast<ubyte>((base.g * blend.g) / 0xff),
+			static_cast<ubyte>((base.b * blend.b) / 0xff),
+			static_cast<ubyte>((base.a * blend.a) / 0xff)
+		};
 	}
+	Color Color::operator+=(const Color& blend)
+	{
+		*this = *this + blend;
+		return *this;
+	}
+	Color Color::operator-=(const Color& blend)
+	{
+		*this = *this - blend;
+		return *this;
+	}
+	Color Color::operator*=(const Color& blend)
+	{
+		*this = *this * blend;
+		return *this;
+	}
+	bool operator==(const Color& left, const Color& right)
+	{
+		return ((left.r == right.r) && (left.g == right.g) && (left.b == right.b) && (left.a == right.a));
+	}
+
 	std::ostream& operator<<(std::ostream& os, const Color& color)
 	{
 		os << "R:" << (int)color.r
@@ -90,19 +110,7 @@ namespace Win32
 			<< ", A:" << (int)color.a;
 		return os;
 	}
-	bool operator==(const Color& left, const Color& right)
-	{
-		return ((left.r == right.r) && (left.g == right.g) && (left.b == right.b) && (left.a == right.a));
-	}
 
-	Color Color::operator+=(const Color& blend)
-	{
-		return Color{ r, g, b, a } + blend;
-	}
-	Color Color::operator-=(const Color& blend)
-	{
-		return Color{ r, g, b, a } - blend;
-	}
 	XMFLOAT4 Color::floats() const
 	{
 		return{
@@ -142,27 +150,29 @@ namespace Win32
 	}
 	Image::Image(wstring_view path)
 	{
-
-		unsigned char* pixels = stbi_load(Convert::MultiByteStr(path).c_str(), &width, &height, &channels, sizeof(Color));
-		std::cout << Convert::MultiByteStr(path).c_str() << std::endl;
 		if (!std::filesystem::exists(path))
 		{
 			throw std::runtime_error(std::format("ファイルが存在しません \n path:{}", Convert::MultiByteStr(path).c_str()));
 		}
-		else if (!pixels)
+
+		std::string mbPath = Convert::MultiByteStr(path);
+
+		unsigned char* pixels = stbi_load(mbPath.c_str(), &width, &height, &channels, sizeof(Color));
+		if (!pixels)
 		{
-			throw std::runtime_error("画像データが破損しています");
+			throw std::runtime_error(std::format("画像データが破損しています \n path", mbPath));
 		}
-		std::cout << "Image:Width " << width << "\n";
-		std::cout << "Image:Height " << height << "\n";
 
 		const size_t size = static_cast<size_t>(width * height);
-		if (size > SIZE_MAX) throw std::runtime_error("データサイズが大きすぎます！");
+		if (size > SIZE_MAX)
+		{
+			stbi_image_free(pixels);
+			throw std::runtime_error("データサイズが大きすぎます！");
+		}
 
 		colors.clear();
 		colors.resize(size);
 		std::memcpy(colors.data(), pixels, size * sizeof(Color));
-//		std::memcpy(colors.data(), pixels, size);
 
 		stbi_image_free(pixels);
 	}
@@ -228,22 +238,20 @@ namespace Win32
 
 	Color Image::getPixel(int x, int y) const
 	{
-		size_t index = static_cast<size_t>(x + this->width * y);
-		if (index >= colors.size() || x < 0 || y < 0)
+		if (x < 0 || y < 0 || x >= width || y >= height)
 		{
-			return Color(255, 0);
+			return Color(0, 0);//透明の黒
 		}
-		return colors[index];
+		return colors[static_cast<size_t>(x + width * y)];
 	}
 
 	void Image::setPixel(int x, int y, const Color& color)
 	{
-		size_t index = static_cast<size_t>(x + this->width * y);
-		if (index >= colors.size() || x < 0 || y < 0)
+		if (x < 0 || y < 0 || x >= width || y >= height)
 		{
 			return;
 		}
-		colors[index] = color;
+		colors[static_cast<size_t>(x + width * y)] = color;
 	}
 
 	Image Image::clipped(int x, int y, int width, int height) const
@@ -271,42 +279,29 @@ namespace Win32
 	//マイナスの値を指定すると縮小します←嘘です
 	Image Image::scaled(int scale) const
 	{
-		Image out;
-		if (scale <= 0)
+		if (scale < 0)
 		{
-			out = Image{ width * scale, height * scale };
-
-			Color color;
-
-			for (int y = 0; y < out.height; y++)
-			{
-				for (int x = 0; x < out.width; x++)
-				{
-
-				}
-			}
+			throw std::invalid_argument("scaleは正の値でなければなりません");
 		}
-		else
-		{
-			out = Image{ width * scale, height * scale };
-			Color color;
 
-			for (int y = 0; y < height; y++)
+		Image out;
+		out = Image{ width * scale, height * scale };
+		Color color;
+
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
 			{
-				for (int x = 0; x < width; x++)
+				color = this->getPixel(x, y);
+				for (int xs = 0; xs < scale; xs++)
 				{
-					color = this->getPixel(x, y);
-					for (int xs = 0; xs < scale; xs++)
+					for (int ys = 0; ys < scale; ys++)
 					{
-						for (int ys = 0; ys < scale; ys++)
-						{
-							out.setPixel(x * scale + xs, y * scale + ys, color);
-						}
+						out.setPixel(x * scale + xs, y * scale + ys, color);
 					}
 				}
 			}
 		}
-
 
 		return out;
 	}
@@ -355,7 +350,11 @@ namespace Win32
 			break;
 
 		case Filter::Noise:
+			for (auto& rgb : out.colors)
+			{
+			}
 			break;
+
 		}
 
 		return out;
@@ -370,7 +369,7 @@ namespace Win32
 			for (int x = 0; x < width; x++)
 			{
 				Color topColor = out.getPixel(x, y);
-				Color bottomColor = out.getPixel(x, height - y);
+				Color bottomColor = out.getPixel(x, height - 1 - y);
 
 				out.setPixel(x, y, bottomColor);
 				out.setPixel(x, height - y, topColor);
@@ -389,7 +388,7 @@ namespace Win32
 			for (int x = 0; x < (width >> 1); x++)
 			{
 				Color leftColor = out.getPixel(x, y);
-				Color rightColor = out.getPixel(width - x, y);
+				Color rightColor = out.getPixel(width - 1 - x, y);
 
 				out.setPixel(x, y, rightColor);
 				out.setPixel(width - x, y, leftColor);
@@ -420,75 +419,33 @@ namespace Win32
 		colors.shrink_to_fit();
 	}
 
-	void Image::blendAddition(const Color& blend)
+	void Image::encode(const wstring_view fileName, ImageFormat format, bool overWrite = false) const
 	{
-		for (auto& pixel : colors)
+		if (!overWrite)
 		{
-			pixel += blend;
+			return;
 		}
-	}
 
-	void Image::encodePNG(const wstring_view fileName) const
-	{
-		if (!std::filesystem::exists(fileName))
+		int result = 0;
+		switch (format)
 		{
-			stbi_write_png(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
+		case ImageFormat::PNG:
+			result = stbi_write_png(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
+			break;
+		case ImageFormat::JPEG:
+			result = stbi_write_jpg(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
+			break;
+		case ImageFormat::BMP:
+			result = stbi_write_bmp(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
+			break;
+		case ImageFormat::TGA:
+			result = stbi_write_tga(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
+			break;
 		}
-	}
 
-	void Image::encodePNG(const wstring_view fileName, bool overWrite) const
-	{
-		if (overWrite)
+		if (!result)
 		{
-			stbi_write_png(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
-		}
-	}
-
-	void Image::encodeJPG(const wstring_view fileName) const
-	{
-		if (!std::filesystem::exists(fileName))
-		{
-			stbi_write_jpg(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
-		}
-	}
-
-	void Image::encodeJPG(const wstring_view fileName, bool overWrite) const
-	{
-		if (overWrite)
-		{
-			stbi_write_jpg(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
-		}
-	}
-
-	void Image::encodeBMP(const wstring_view fileName) const
-	{
-		if (!std::filesystem::exists(fileName))
-		{
-			stbi_write_bmp(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
-		}
-	}
-
-	void Image::encodeBMP(const wstring_view fileName, bool overWrite) const
-	{
-		if (overWrite)
-		{
-			stbi_write_bmp(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
-		}
-	}
-
-	void Image::encodeTGA(const wstring_view fileName) const
-	{
-		if (!std::filesystem::exists(fileName))
-		{
-			stbi_write_tga(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
-		}
-	}
-
-	void Image::encodeTGA(const wstring_view fileName, bool overWrite) const
-	{
-		if (overWrite)
-		{
-			stbi_write_tga(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
+			throw std::runtime_error("画像ファイルの保存に失敗しました");
 		}
 	}
 	//class Image end

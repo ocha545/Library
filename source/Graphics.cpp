@@ -605,7 +605,7 @@ namespace Win32
 			}
 		}
 
-		return out;
+		return out.swapped(Color(0), Color(255));
 	}
 	//class Text end
 

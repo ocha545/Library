@@ -10,8 +10,8 @@ int main()
 	GraphicsXI::SetClearColor(Color(30, 30, 60));
 	Texture texts[] =
 	{
-		Text::GetTextImage(L"Normal").swapped(Color(0), Color(255)).scaled(4),
-		Text::GetTextImage(L"Gray Scale").swapped(Color(0), Color(255)).scaled(4)
+		Text::GetTextImage(L"Normal").scaled(4),
+		Text::GetTextImage(L"Gray Scale").scaled(4)
 	};
 	Texture images[] =
 	{
@@ -35,7 +35,7 @@ int main()
 		texts[1].position(500, 50);
 		images[1].position(480, 100);
 
-		gfx.draw(texts[0].get());
+		gfx.draw(texts[0].color(Color(255, 0, 0)).get());
 		gfx.draw(images[0].get());
 		gfx.draw(texts[1].get());
 		gfx.draw(images[1].get());
