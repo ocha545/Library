@@ -15,14 +15,11 @@ int main()
 	};
 	Texture images[] =
 	{
-		Image{L"images/sm64.png"}.filtered(Filter::Noise).scaled(-2),
+		Image{L"images/sm64.png"}.filtered(Filter::Noise).scaled(2),
 		Image{L"images/sm64.png"}.filtered(Filter::GrayScale)
 	};
 
-//	Image{ L"images/sm64.png" }.filtered(Filter::GrayScale).encodePNG(L"SuperTest.png");
-//	Image{ L"images/sm64.png" }.filtered(Filter::GrayScale).encodeJPG(L"SuperTest.jpg");
-//	Image{ L"images/sm64.png" }.filtered(Filter::GrayScale).encodeBMP(L"SuperTest.bmp");
-//	Image{ L"images/sm64.png" }.filtered(Filter::GrayScale).encodeTGA(L"SuperTest.tga");
+//	Image{ L"images/sm64.png" }.filtered(Filter::GrayScale).encode(L"SuperTest.png", ImageFormat::PNG);
 
 	window.show();
 

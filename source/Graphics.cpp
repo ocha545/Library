@@ -799,7 +799,6 @@ namespace Win32
 				desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 				Hr = Core::device->CreateBuffer(&desc, nullptr, Core::drawTypeConstantBuffer.GetAddressOf());
-				std::cout << "Result:" << Hr << std::endl;
 				assert(SUCCEEDED(Hr));
 				AST_NULL(Core::drawTypeConstantBuffer.Get());
 			}
@@ -942,7 +941,6 @@ namespace Win32
 			if (cmd.type == Core::CommandType::LINE)
 			{
 				Core::context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-//				std::cout << "いあ\n";
 			}
 			else
 			{
@@ -956,7 +954,6 @@ namespace Win32
 			if (cmd.type == Core::CommandType::LINE)
 			{
 				Core::context->Draw(2, 0);
-//				std::cout << "どろ\n";
 			}
 			else
 			{
