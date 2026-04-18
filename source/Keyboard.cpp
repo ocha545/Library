@@ -46,7 +46,6 @@ namespace Win32
 	void Input::Check()
 	{
 		memcpy(Core::statePrev, Core::state, sizeof(Core::state));
-
 		Hr = Core::device8->GetDeviceState(sizeof(Core::state), (void**)Core::state);
 		if (FAILED(Hr))
 		{
@@ -54,8 +53,7 @@ namespace Win32
 			Core::device8->GetDeviceState(sizeof(Core::state), Core::state);
 		}
 
-
-		Core::mouseStatePrev = Core::mouseState;
+		memcpy(&Core::mouseStatePrev, &Core::mouseState, sizeof(Core::mouseState));
 		Hr = Core::mouseDevice8->GetDeviceState(sizeof(Core::mouseState), &Core::mouseState);
 		if (FAILED(Hr))
 		{

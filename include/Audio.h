@@ -2,6 +2,8 @@
 #include"Macros.h"
 #include"Helper.h"
 #include"Utility.h"
+#include"AudioResource.h"
+#include"AudioFormat.h"
 // ComPtr メモリリークがトラウマなので
 #include<wrl.h>
 using Microsoft::WRL::ComPtr;
@@ -19,56 +21,12 @@ using Microsoft::WRL::ComPtr;
 #include<xapo.h>
 #include<xapobase.h>
 #include<xapofx.h>
-
-// Audio
-// 音声ファイルの詳細を取得するライブラリ
-#include"third_party/taglib/tag.h"
-#include"third_party/taglib/fileref.h"
-#include"third_party/taglib/mpeg/mpegfile.h"
-#include"third_party/taglib/toolkit/tlist.h"
-// 音声ファイル読み取りライブラリ
-// Wave, MP3, FLAC, OGG
-#include"third_party/dr_wav.h"
-#include"third_party/dr_mp3.h"
-#include"third_party/dr_flac.h"
-#include"third_party/vorbis/vorbisfile.h"
-#include"third_party/opusfile/opusfile.h"
-
+#include<mmdeviceapi.h>
+#include<endpointvolume.h>
+#include<functiondiscoverykeys.h>
 
 namespace Win32
 {
-	struct AudioMetaData
-	{
-		std::wstring title = L"";
-		std::wstring artist = L"";
-		std::wstring album = L"";
-		std::wstring genre = L"";
-		std::wstring comment = L"";
-		unsigned int track = 0;
-		unsigned int year = 0;
-		Image jacket{};
-	};
-
-	struct AudioInfo
-	{
-		unsigned short FormatTag = NULL;
-		unsigned short Channels = NULL;
-		unsigned long SampleRate = NULL;
-		unsigned long AvgBytesPerSec = NULL;
-		unsigned short BlockAlign = NULL;
-		unsigned short BitsPerSample = NULL;
-	};
-
-	enum class AudioFormat
-	{
-		NONE = NULL,
-		WAVE = 1,
-		MP3 = 2,
-		FLAC = 3,
-		OGG = 4,
-		OPUS = 5,
-		MAX,
-	};
 
 	//未使用
 	enum class Log
@@ -90,102 +48,6 @@ namespace Win32
 	{
 
 	}
-
-	class MP3
-	{
-	private:
-		std::unique_ptr<drmp3> mp3;
-		std::vector<short> pcm;
-		AudioInfo info{};
-		AudioMetaData meta{};
-		bool isRead;
-
-	public:
-		MP3(const std::wstring& path, bool extract);
-		~MP3();
-		operator bool();
-		const std::vector<short> getPCM() const;
-		const AudioInfo getInformation() const;
-		const AudioMetaData getMetaData() const;
-	};
-
-	class WAVE
-	{
-	private:
-		std::unique_ptr<drwav> wav;
-		std::vector<short> pcm;
-		AudioInfo info{};
-		AudioMetaData meta{};
-		bool isRead;
-
-	public:
-		WAVE(const std::wstring& path, bool extract);
-		WAVE(int sampleRate, int channels);
-		~WAVE();
-		operator bool();
-		const std::vector<short> getPCM() const;
-		const AudioInfo getInformation() const;
-		const AudioMetaData getMetaData() const;
-	};
-
-	class FLAC
-	{
-	private:
-		drflac* flac = nullptr;
-		std::vector<short> pcm;
-		AudioInfo info{};
-		AudioMetaData meta{};
-		bool isRead;
-
-	public:
-		FLAC(const std::wstring& path, bool extract);
-		~FLAC();
-		operator bool();
-		const std::vector<short> getPCM() const;
-		const AudioInfo getInformation() const;
-		const AudioMetaData getMetaData() const;
-	};
-
-	class OGG
-	{
-	private:
-		OggVorbis_File ogg;
-		std::vector<short> pcm;
-		AudioInfo info{};
-		AudioMetaData meta{};
-		bool isRead;
-
-	public:
-		OGG(const std::wstring& path, bool extract);
-		~OGG();
-		operator bool();
-		const std::vector<short> getPCM() const;
-		const AudioInfo getInformation() const;
-		const AudioMetaData getMetaData() const;
-	};
-
-	class OPUS
-	{
-	private:
-		bool isRead;
-		std::vector<short> pcm;
-		AudioInfo info{};
-		AudioMetaData meta{};
-		OggOpusFile* opus;
-
-	public:
-		OPUS(const std::wstring& path, bool extract);
-		~OPUS();
-		operator bool();
-		const std::vector<short> getPCM() const;
-		const AudioInfo getInformation() const;
-		const AudioMetaData getMetaData() const;
-	};
-
-
-
-
-
 
 
 	//テストよう (gemini作)
@@ -232,10 +94,17 @@ namespace Win32
 
 
 
-
-
-
-
+	namespace Core
+	{
+		static  std::wstring audioFormatString[(size_t)AudioFormat::MAX]{
+			L"None",
+			L"Wave",
+			L"MP3",
+			L"Flac",
+			L"OGG",
+			L"Opus",
+		};
+	}
 
 	class Audio
 	{
@@ -247,20 +116,15 @@ namespace Win32
 		XAUDIO2_VOICE_STATE XAudio2State{};
 		int loopCount = 0;
 		HRESULT Hr = NULL;
-		bool coInitilized = false;
+		bool coInitialized = false;
 
 		std::vector<short>	audio;
-		AudioMetaData			audioMetaData{};
-		AudioInfo				audioInfo{};
-		AudioFormat				audioFormat = AudioFormat::NONE;
-		std::wstring			audioFormatString[(size_t)AudioFormat::MAX]{
-			L"None",
-			L"Wave",
-			L"MP3",
-			L"Flac",
-			L"OGG",
-			L"Opus",
-		};
+		AudioMetaData		audioMetaData{};
+		AudioInfo			audioInfo{};
+		AudioFormat			audioFormat = AudioFormat::NONE;
+
+	public:
+		HRESULT EnumerateDevicesInternal(std::vector<AudioDeviceInfo>& devices);
 
 	public:
 		Audio(const std::wstring& path, UINT32 loopCount = 0);
@@ -279,9 +143,9 @@ namespace Win32
 
 		void DisableEcho();
 
-		void EnableEuqalizer();
+		void EnableEqualizer();
 
-		void DisableEuqalizer();
+		void DisableEqualizer();
 
 		std::wstring GetTimeW();
 

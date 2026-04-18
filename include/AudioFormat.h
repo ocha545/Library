@@ -1,0 +1,115 @@
+﻿#pragma once
+#include"AudioResource.h"
+#include"third_party/taglib/tag.h"
+#include"third_party/taglib/fileref.h"
+#include"third_party/taglib/mpeg/mpegfile.h"
+#include"third_party/taglib/toolkit/tlist.h"
+#include"third_party/dr_wav.h"
+#include"third_party/dr_mp3.h"
+#include"third_party/dr_flac.h"
+#include"third_party/vorbis/vorbisfile.h"
+#include"third_party/opusfile/opusfile.h"
+
+namespace Win32
+{
+	enum class AudioFormat
+	{
+		NONE = NULL,
+		WAVE = 1,
+		MP3 = 2,
+		FLAC = 3,
+		OGG = 4,
+		OPUS = 5,
+		MAX,
+	};
+
+	class MP3
+	{
+	private:
+		std::unique_ptr<drmp3> mp3;
+		std::vector<short> pcm;
+		AudioInfo info{};
+		AudioMetaData meta{};
+		bool isRead;
+
+	public:
+		MP3(const std::wstring& path, bool extract);
+		~MP3();
+		operator bool();
+		const std::vector<short> getPCM() const;
+		const AudioInfo getInformation() const;
+		const AudioMetaData getMetaData() const;
+	};
+
+	class WAVE
+	{
+	private:
+		std::unique_ptr<drwav> wav;
+		std::vector<short> pcm;
+		AudioInfo info{};
+		AudioMetaData meta{};
+		bool isRead;
+
+	public:
+		WAVE(const std::wstring& path, bool extract);
+		~WAVE();
+		operator bool();
+		const std::vector<short> getPCM() const;
+		const AudioInfo getInformation() const;
+		const AudioMetaData getMetaData() const;
+	};
+
+	class FLAC
+	{
+	private:
+		drflac* flac = nullptr;
+		std::vector<short> pcm;
+		AudioInfo info{};
+		AudioMetaData meta{};
+		bool isRead;
+
+	public:
+		FLAC(const std::wstring& path, bool extract);
+		~FLAC();
+		operator bool();
+		const std::vector<short> getPCM() const;
+		const AudioInfo getInformation() const;
+		const AudioMetaData getMetaData() const;
+	};
+
+	class OGG
+	{
+	private:
+		OggVorbis_File ogg;
+		std::vector<short> pcm;
+		AudioInfo info{};
+		AudioMetaData meta{};
+		bool isRead;
+
+	public:
+		OGG(const std::wstring& path, bool extract);
+		~OGG();
+		operator bool();
+		const std::vector<short> getPCM() const;
+		const AudioInfo getInformation() const;
+		const AudioMetaData getMetaData() const;
+	};
+
+	class OPUS
+	{
+	private:
+		bool isRead;
+		std::vector<short> pcm;
+		AudioInfo info{};
+		AudioMetaData meta{};
+		OggOpusFile* opus;
+
+	public:
+		OPUS(const std::wstring& path, bool extract);
+		~OPUS();
+		operator bool();
+		const std::vector<short> getPCM() const;
+		const AudioInfo getInformation() const;
+		const AudioMetaData getMetaData() const;
+	};
+}
