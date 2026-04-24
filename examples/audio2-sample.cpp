@@ -6,7 +6,9 @@ int main()
 	std::locale::global(std::locale("ja_JP.UTF-8"));
 	std::wcout.imbue(std::locale());
 	AudioMonitor adm{};
-	AudioMaster data{ L"music/melissa.mp3" };
+	// シャイニングスター : 魔王魂(MaouDamashii)
+	// タグ情報の改変をしています。
+	AudioMaster data{ L"music/maou_14_shining_star.mp3" };
 	std::vector<AudioDeviceInfo> devices = adm.enumerateDevices();
 	constexpr wchar_t lbrk = L'\n';
 
@@ -14,7 +16,6 @@ int main()
 
 	if (continueApp)
 	{
-		adm.volume(data, 0.01f);
 		std::wcout << L"--- information ---" << lbrk;
 		std::wcout << L"Channels:   " << data.getInfo().Channels << lbrk;
 		std::wcout << L"SampleRate: " << data.getInfo().SampleRate << lbrk;
@@ -36,6 +37,7 @@ int main()
 		std::wcout << L"Select Device Number: ";
 		std::wcin >> selectDevice;
 		adm.changeDevice(devices[std::stoi(selectDevice)], data);
+		adm.volume(data, 0.1f);
 		adm.play(data);
 	}
 	while (adm.isPlaying(data) && continueApp)
