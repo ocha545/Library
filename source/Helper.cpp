@@ -32,7 +32,7 @@ namespace Win32
 		return rect.bottom - rect.top;
 	}
 
-	namespace Convert
+	namespace String
 	{
 		const std::wstring WideStr(const string_view mb)
 		{
@@ -41,6 +41,17 @@ namespace Win32
 		const std::string MultiByteStr(const wstring_view wide)
 		{
 			return std::filesystem::path(wide).string();
+		}
+       std::vector<std::wstring> Split(const wstring& text, wchar_t spl)
+		{
+			std::vector<std::wstring> out;
+			std::wstringstream wstream{ text };
+			std::wstring tmp;
+			while (std::getline(wstream, tmp, spl))
+			{
+				out.emplace_back(tmp);
+			}
+			return out;
 		}
 	}
 }

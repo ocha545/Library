@@ -1,4 +1,5 @@
-﻿#pragma warning(push)
+﻿#include"../include/Utility.h"
+#pragma warning(push)
 #pragma warning(disable: 6262)//関数はスタックの '35036' バイトを使用します。データの一部をヒープに移動することを考慮してください。
 #pragma warning(disable: 26819)//switch ラベルどうしの間に、注釈の付いていないフォールスルーがあります (es.78)。
 #define STB_IMAGE_IMPLEMENTATION
@@ -6,7 +7,6 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include"../include/third_party/stb/stb_image_write.h"
 #pragma warning(pop)
-#include"../include/Utility.h"
 
 namespace Win32
 {
@@ -152,10 +152,10 @@ namespace Win32
 	{
 		if (!std::filesystem::exists(path))
 		{
-			throw std::runtime_error(std::format("ファイルが存在しません \n path:{}", Convert::MultiByteStr(path).c_str()));
+			throw std::runtime_error(std::format("ファイルが存在しません \n path:{}", String::MultiByteStr(path).c_str()));
 		}
 
-		std::string mbPath = Convert::MultiByteStr(path);
+		std::string mbPath = String::MultiByteStr(path);
 
 		unsigned char* pixels = stbi_load(mbPath.c_str(), &width, &height, &channels, sizeof(Color));
 		if (!pixels)
@@ -430,16 +430,16 @@ namespace Win32
 		switch (format)
 		{
 		case ImageFormat::PNG:
-			result = stbi_write_png(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
+			result = stbi_write_png(String::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
 			break;
 		case ImageFormat::JPEG:
-			result = stbi_write_jpg(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
+			result = stbi_write_jpg(String::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data(), 0);
 			break;
 		case ImageFormat::BMP:
-			result = stbi_write_bmp(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
+			result = stbi_write_bmp(String::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
 			break;
 		case ImageFormat::TGA:
-			result = stbi_write_tga(Convert::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
+			result = stbi_write_tga(String::MultiByteStr(fileName).c_str(), width, height, sizeof(Color), colors.data());
 			break;
 		}
 

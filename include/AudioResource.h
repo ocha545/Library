@@ -1,13 +1,27 @@
 ﻿#pragma once
+#include"Utility.h"
+#include"third_party/taglib/tag.h"
+#include"third_party/taglib/fileref.h"
+#include"third_party/taglib/mpeg/mpegfile.h"
+#include"third_party/taglib/toolkit/tlist.h"
 #include<windows.h>
 #include<vector>
 #include<memory>
 #include<string>
 #include<fstream>
-#include"Utility.h"
-
 namespace Win32
 {
+	enum class AudioFormat
+	{
+		NONE = NULL,
+		WAVE = 1,
+		MP3 = 2,
+		FLAC = 3,
+		OGG = 4,
+		OPUS = 5,
+		MAX,
+	};
+
 	struct AudioDeviceInfo
 	{
 		std::wstring deviceId;
@@ -39,6 +53,30 @@ namespace Win32
 		unsigned long AvgBytesPerSec = NULL;
 		unsigned short BlockAlign = NULL;
 		unsigned short BitsPerSample = NULL;
+	};
+
+	class AudioMetaData2
+	{
+	private:
+		static const wchar_t SEPARATOR = L'\u001F';
+		std::wstring allTag;
+		unsigned int t = 0;
+		unsigned int y = 0;
+		Image j{};
+
+	public:
+		AudioMetaData2()
+			: allTag(L"") {
+		};
+		AudioMetaData2(const TagLib::Tag* tag, bool disableImage = false);
+		std::wstring title() const;
+		std::wstring artist() const;
+		std::wstring album() const;
+		std::wstring genre() const;
+		std::wstring comment() const;
+		unsigned int track() const;
+		unsigned int year() const;
+		Image jacket() const;
 	};
 }
 

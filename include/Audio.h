@@ -119,7 +119,7 @@ namespace Win32
 		bool coInitialized = false;
 
 		std::vector<short>	audio;
-		AudioMetaData		audioMetaData{};
+		AudioMetaData2		audioMetaData{};
 		AudioInfo			audioInfo{};
 		AudioFormat			audioFormat = AudioFormat::NONE;
 
@@ -155,7 +155,7 @@ namespace Win32
 			
 		const AudioInfo Information() const;
 
-		const AudioMetaData MetaData() const;
+		const AudioMetaData2 MetaData() const;
 
 		const AudioFormat Format() const;
 

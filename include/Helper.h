@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include<windows.h>
 #include<string>
+#include<vector>
 #include<format>
 #include<cstdlib>
 #include<filesystem>
@@ -17,9 +18,10 @@ namespace Win32
 	int GetWindowWidth(HWND hwnd);
 	int GetWindowHeight(HWND hwnd);
 
-	namespace Convert
+	namespace String
 	{
 		const wstring WideStr(const string_view mb);
 		const string MultiByteStr(const wstring_view wide);
+		std::vector<std::wstring> Split(const wstring& text, wchar_t spl);
 	}
 }

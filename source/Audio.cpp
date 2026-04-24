@@ -130,7 +130,7 @@ namespace Win32
 		std::vector<short> localAudio;
 		AudioInfo localInfo{};
 		AudioFormat localFormat = CheckFormat(path);
-		AudioMetaData localMetaData{};
+		AudioMetaData2 localMetaData{};
 
 		if (localFormat == AudioFormat::WAVE)
 		{
@@ -249,7 +249,7 @@ namespace Win32
 		std::vector<short> localAudio = pcmData;
 		AudioInfo localInfo = info;
 		AudioFormat localFormat = AudioFormat::NONE;
-		AudioMetaData localMetaData{};
+		AudioMetaData2 localMetaData{};
 
 		const uint64_t audioByteCount = static_cast<uint64_t>(localAudio.size()) * sizeof(int16_t);
 		if (audioByteCount > (std::numeric_limits<uint64_t>::max)())
@@ -577,7 +577,7 @@ namespace Win32
 		return audioInfo;
 	}
 
-	const AudioMetaData Audio::MetaData() const
+	const AudioMetaData2 Audio::MetaData() const
 	{
 		return audioMetaData;
 	}

@@ -50,22 +50,23 @@ namespace Win32
 			auto keys = tagFile.tag()->complexPropertyKeys();
 			if (tagFile.tag() && !tagFile.isNull())
 			{
-				if (!jacket.isEmpty())
-				{
-					std::ofstream outFile{ "cover.jpeg", std::ios::out | std::ios::binary };
-					auto pictureData = jacket.front()["data"].toByteVector();
-					outFile.write(pictureData.data(), pictureData.size());
-					outFile.close();
-					meta.jacket = Image{ L"cover.jpeg" };
-				}
+				meta = AudioMetaData2{ tagFile.tag() };
+				//if (!jacket.isEmpty())
+				//{
+				//	std::ofstream outFile{ "cover.jpeg", std::ios::out | std::ios::binary };
+				//	auto pictureData = jacket.front()["data"].toByteVector();
+				//	outFile.write(pictureData.data(), pictureData.size());
+				//	outFile.close();
+				//	meta.jacket = Image{ L"cover.jpeg" };
+				//}
 
-				meta.title = tagFile.tag()->title().toWString();
-				meta.artist = tagFile.tag()->artist().toWString();
-				meta.album = tagFile.tag()->album().toWString();
-				meta.genre = tagFile.tag()->genre().toWString();
-				meta.comment = tagFile.tag()->comment().toWString();
-				meta.track = tagFile.tag()->track();
-				meta.year = tagFile.tag()->year();
+				//meta.title = tagFile.tag()->title().toWString();
+				//meta.artist = tagFile.tag()->artist().toWString();
+				//meta.album = tagFile.tag()->album().toWString();
+				//meta.genre = tagFile.tag()->genre().toWString();
+				//meta.comment = tagFile.tag()->comment().toWString();
+				//meta.track = tagFile.tag()->track();
+				//meta.year = tagFile.tag()->year();
 			}
 		}
 	}
@@ -89,7 +90,7 @@ namespace Win32
 	{
 		return this->info;
 	}
-	const AudioMetaData MP3::getMetaData() const
+	const AudioMetaData2 MP3::getMetaData() const
 	{
 		return meta;
 	}
@@ -126,13 +127,15 @@ namespace Win32
 			TagLib::FileRef tagFile(TagLib::FileName(path.c_str()), true);
 			if (tagFile.tag() && !tagFile.isNull())
 			{
-				meta.title = tagFile.tag()->title().toWString();
-				meta.artist = tagFile.tag()->artist().toWString();
-				meta.album = tagFile.tag()->album().toWString();
-				meta.genre = tagFile.tag()->genre().toWString();
-				meta.comment = tagFile.tag()->comment().toWString();
-				meta.track = tagFile.tag()->track();
-				meta.year = tagFile.tag()->year();
+				meta = AudioMetaData2{ tagFile.tag() };
+
+				//meta.title = tagFile.tag()->title().toWString();
+				//meta.artist = tagFile.tag()->artist().toWString();
+				//meta.album = tagFile.tag()->album().toWString();
+				//meta.genre = tagFile.tag()->genre().toWString();
+				//meta.comment = tagFile.tag()->comment().toWString();
+				//meta.track = tagFile.tag()->track();
+				//meta.year = tagFile.tag()->year();
 			}
 		}
 	}
@@ -156,7 +159,7 @@ namespace Win32
 	{
 		return this->info;
 	}
-	const AudioMetaData WAVE::getMetaData() const
+	const AudioMetaData2 WAVE::getMetaData() const
 	{
 		return meta;
 	}
@@ -194,22 +197,23 @@ namespace Win32
 			auto keys = tagFile.tag()->complexPropertyKeys();
 			if (tagFile.tag() && !tagFile.isNull())
 			{
-				if (!jacket.isEmpty())
-				{
-					std::ofstream outFile{ "cover.jpeg", std::ios::out | std::ios::binary };
-					auto pictureData = jacket.front()["data"].toByteVector();
-					outFile.write(pictureData.data(), pictureData.size());
-					outFile.close();
-					meta.jacket = Image{ L"cover.jpeg" };
-				}
+				meta = AudioMetaData2{ tagFile.tag() };
+				//if (!jacket.isEmpty())
+				//{
+				//	std::ofstream outFile{ "cover.jpeg", std::ios::out | std::ios::binary };
+				//	auto pictureData = jacket.front()["data"].toByteVector();
+				//	outFile.write(pictureData.data(), pictureData.size());
+				//	outFile.close();
+				//	meta.jacket = Image{ L"cover.jpeg" };
+				//}
 
-				meta.title = tagFile.tag()->title().toWString();
-				meta.artist = tagFile.tag()->artist().toWString();
-				meta.album = tagFile.tag()->album().toWString();
-				meta.genre = tagFile.tag()->genre().toWString();
-				meta.comment = tagFile.tag()->comment().toWString();
-				meta.track = tagFile.tag()->track();
-				meta.year = tagFile.tag()->year();
+				//meta.title = tagFile.tag()->title().toWString();
+				//meta.artist = tagFile.tag()->artist().toWString();
+				//meta.album = tagFile.tag()->album().toWString();
+				//meta.genre = tagFile.tag()->genre().toWString();
+				//meta.comment = tagFile.tag()->comment().toWString();
+				//meta.track = tagFile.tag()->track();
+				//meta.year = tagFile.tag()->year();
 			}
 		}
 	}
@@ -232,7 +236,7 @@ namespace Win32
 	{
 		return this->info;
 	}
-	const AudioMetaData FLAC::getMetaData() const
+	const AudioMetaData2 FLAC::getMetaData() const
 	{
 		return meta;
 	}
@@ -241,7 +245,7 @@ namespace Win32
 	//class OGG begin
 	OGG::OGG(const std::wstring& path, bool extract)
 	{
-		this->isRead = ov_fopen(Convert::MultiByteStr(path).c_str(), &ogg) == 0 ? true : false;
+		this->isRead = ov_fopen(String::MultiByteStr(path).c_str(), &ogg) == 0 ? true : false;
 
 		if (isRead && extract)
 		{
@@ -294,22 +298,23 @@ namespace Win32
 			auto keys = tagFile.tag()->complexPropertyKeys();
 			if (tagFile.tag() && !tagFile.isNull())
 			{
-				if (!jacket.isEmpty())
-				{
-					std::ofstream outFile{ "cover.jpeg", std::ios::out | std::ios::binary };
-					auto pictureData = jacket.front()["data"].toByteVector();
-					outFile.write(pictureData.data(), pictureData.size());
-					outFile.close();
-					meta.jacket = Image{ L"cover.jpeg" };
-				}
+				meta = AudioMetaData2{ tagFile.tag() };
+				//if (!jacket.isEmpty())
+				//{
+				//	std::ofstream outFile{ "cover.jpeg", std::ios::out | std::ios::binary };
+				//	auto pictureData = jacket.front()["data"].toByteVector();
+				//	outFile.write(pictureData.data(), pictureData.size());
+				//	outFile.close();
+				//	meta.jacket = Image{ L"cover.jpeg" };
+				//}
 
-				meta.title = tagFile.tag()->title().toWString();
-				meta.artist = tagFile.tag()->artist().toWString();
-				meta.album = tagFile.tag()->album().toWString();
-				meta.genre = tagFile.tag()->genre().toWString();
-				meta.comment = tagFile.tag()->comment().toWString();
-				meta.track = tagFile.tag()->track();
-				meta.year = tagFile.tag()->year();
+				//meta.title = tagFile.tag()->title().toWString();
+				//meta.artist = tagFile.tag()->artist().toWString();
+				//meta.album = tagFile.tag()->album().toWString();
+				//meta.genre = tagFile.tag()->genre().toWString();
+				//meta.comment = tagFile.tag()->comment().toWString();
+				//meta.track = tagFile.tag()->track();
+				//meta.year = tagFile.tag()->year();
 			}
 		}
 	}
@@ -332,7 +337,7 @@ namespace Win32
 	{
 		return this->info;
 	}
-	const AudioMetaData OGG::getMetaData() const
+	const AudioMetaData2 OGG::getMetaData() const
 	{
 		return meta;
 	}
@@ -342,7 +347,7 @@ namespace Win32
 	OPUS::OPUS(const std::wstring& path, bool extract)
 	{
 		int ret = 0;
-		opus = op_open_file(Convert::MultiByteStr(path).c_str(), &ret);
+		opus = op_open_file(String::MultiByteStr(path).c_str(), &ret);
 		this->isRead = (ret == 0) ? true : false;
 
 		if (isRead && extract)
@@ -393,22 +398,23 @@ namespace Win32
 			auto keys = tagFile.tag()->complexPropertyKeys();
 			if (tagFile.tag() && !tagFile.isNull())
 			{
-				if (!jacket.isEmpty())
-				{
-					std::ofstream outFile{ "cover.jpeg", std::ios::out | std::ios::binary };
-					auto pictureData = jacket.front()["data"].toByteVector();
-					outFile.write(pictureData.data(), pictureData.size());
-					outFile.close();
-					meta.jacket = Image{ L"cover.jpeg" };
-				}
+				meta = AudioMetaData2{ tagFile.tag() };
+				//if (!jacket.isEmpty())
+				//{
+				//	std::ofstream outFile{ "cover.jpeg", std::ios::out | std::ios::binary };
+				//	auto pictureData = jacket.front()["data"].toByteVector();
+				//	outFile.write(pictureData.data(), pictureData.size());
+				//	outFile.close();
+				//	meta.jacket = Image{ L"cover.jpeg" };
+				//}
 
-				meta.title = tagFile.tag()->title().toWString();
-				meta.artist = tagFile.tag()->artist().toWString();
-				meta.album = tagFile.tag()->album().toWString();
-				meta.genre = tagFile.tag()->genre().toWString();
-				meta.comment = tagFile.tag()->comment().toWString();
-				meta.track = tagFile.tag()->track();
-				meta.year = tagFile.tag()->year();
+				//meta.title = tagFile.tag()->title().toWString();
+				//meta.artist = tagFile.tag()->artist().toWString();
+				//meta.album = tagFile.tag()->album().toWString();
+				//meta.genre = tagFile.tag()->genre().toWString();
+				//meta.comment = tagFile.tag()->comment().toWString();
+				//meta.track = tagFile.tag()->track();
+				//meta.year = tagFile.tag()->year();
 			}
 		}
 	}
@@ -428,7 +434,7 @@ namespace Win32
 	{
 		return this->info;
 	}
-	const AudioMetaData OPUS::getMetaData() const
+	const AudioMetaData2 OPUS::getMetaData() const
 	{
 		return meta;
 	}

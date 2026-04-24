@@ -1,4 +1,5 @@
 ﻿#include"../include/Audio.h"
+#include"../include/AudioResource.h"
 using namespace Win32;
 
 int main()
@@ -6,7 +7,8 @@ int main()
 	std::locale::global(std::locale("ja_JP.UTF-8"));
 	std::wcout.imbue(std::locale());
 
-	Audio audio{ L"music/Blue.mp3" };
+	MP3 mp3{ L"music/Blue.mp3", true };
+	Audio audio{ mp3.getPCM(), mp3.getInformation() };
 
 	std::vector<AudioDeviceInfo> devices;
 	HRESULT hr = audio.EnumerateDevicesInternal(devices);
