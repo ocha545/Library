@@ -76,6 +76,7 @@ namespace Win32
 			{
 				WAVE data{ path, true };
 				this->pcm = data.getPCM();
+				this->format = AudioFormat::WAVE;
 				this->info = data.getInformation();
 				this->meta = data.getMetaData();
 			}
@@ -84,6 +85,7 @@ namespace Win32
 			{
 				MP3 data{ path, true };
 				this->pcm = data.getPCM();
+				this->format = AudioFormat::MP3;
 				this->info = data.getInformation();
 				this->meta = data.getMetaData();
 			}
@@ -92,6 +94,7 @@ namespace Win32
 			{
 				FLAC data{ path, true };
 				this->pcm = data.getPCM();
+				this->format = AudioFormat::FLAC;
 				this->info = data.getInformation();
 				this->meta = data.getMetaData();
 			}
@@ -100,6 +103,7 @@ namespace Win32
 			{
 				OGG data{ path, true };
 				this->pcm = data.getPCM();
+				this->format = AudioFormat::OGG;
 				this->info = data.getInformation();
 				this->meta = data.getMetaData();
 			}
@@ -108,6 +112,7 @@ namespace Win32
 			{
 				OPUS data{ path, true };
 				this->pcm = data.getPCM();
+				this->format = AudioFormat::OPUS;
 				this->info = data.getInformation();
 				this->meta = data.getMetaData();
 			}
