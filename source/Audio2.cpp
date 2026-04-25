@@ -536,7 +536,7 @@ namespace Win32
 			GetTotalLength(
 				state.SamplesPlayed,
 				amm.getInfo().SampleRate,
-				amm.getInfo().Channels
+				1
 			)
 		);
 	}
