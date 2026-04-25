@@ -17,6 +17,15 @@ namespace Win32
 	using std::wstring_view;
 	using Microsoft::WRL::ComPtr;
 
+	static  std::wstring audioFormatString[(size_t)AudioFormat::MAX]{
+		L"None",
+		L"Wave",
+		L"MP3",
+		L"Flac",
+		L"OGG",
+		L"Opus",
+	};
+
 	static double GetTotalLength(size_t size, unsigned long sampleRate, int channels);
 	static void SampleToTime(double in, int& h, int& m, double& s);
 	static double TimeToSample(int h, int m, double s);
@@ -43,6 +52,7 @@ namespace Win32
 
 		AudioInfo getInfo() const;
 		AudioFormat getFormat() const;
+		std::wstring getFormatString() const;
 		AudioMetaData2 getMetaData() const;
 		const std::vector<short>& getData() const;
 		void internalDestroy();

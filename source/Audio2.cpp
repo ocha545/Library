@@ -162,6 +162,10 @@ namespace Win32
 	{
 		return format;
 	}
+	std::wstring AudioMaster::getFormatString() const
+	{
+		return audioFormatString[(size_t)format];
+	}
 	AudioMetaData2 AudioMaster::getMetaData() const
 	{
 		return meta;
