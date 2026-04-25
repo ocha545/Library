@@ -7,7 +7,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include"../include/third_party/stb/stb_image_write.h"
 #pragma warning(pop)
-
+#pragma warning(push)
+#pragma warning(disable: 4018)//'<': signed と unsigned の数値を比較しようとしました。
 namespace Win32
 {
 	//struct Color begin
@@ -450,3 +451,4 @@ namespace Win32
 	}
 	//class Image end
 }
+#pragma warning(pop)
