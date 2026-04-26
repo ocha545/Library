@@ -8,8 +8,7 @@ int main()
 	AudioMonitor adm{};
 	// シャイニングスター : 魔王魂(MaouDamashii)
 	// タグ情報の改変をしています。
-//	AudioMaster data{ L"music/maou_14_shining_star.mp3" };
-	AudioMaster data{ L"music/melissa.mp3" };
+	AudioMaster data{ L"music/maou_14_shining_star.mp3" };
 	std::vector<AudioDeviceInfo> devices = adm.enumerateDevices();
 	constexpr wchar_t lbrk = L'\n';
 
