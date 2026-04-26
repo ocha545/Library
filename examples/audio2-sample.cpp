@@ -8,7 +8,8 @@ int main()
 	AudioMonitor adm{};
 	// シャイニングスター : 魔王魂(MaouDamashii)
 	// タグ情報の改変をしています。
-	AudioMaster data{ L"music/maou_14_shining_star.mp3" };
+//	AudioMaster data{ L"music/maou_14_shining_star.mp3" };
+	AudioMaster data{ L"music/melissa.mp3" };
 	std::vector<AudioDeviceInfo> devices = adm.enumerateDevices();
 	constexpr wchar_t lbrk = L'\n';
 
@@ -27,7 +28,6 @@ int main()
 		std::wcout << L"Track:   " << data.getMetaData().track() << lbrk;
 		std::wcout << L"Year:    " << data.getMetaData().year() << lbrk;
 		std::wcout << L"Length:  " << adm.length(data) << lbrk << lbrk;
-
 		std::wcout << L"--- Audio Device Information --- " << lbrk;
 		for(int i = 0; i < devices.size(); i++)
 		{
@@ -37,10 +37,15 @@ int main()
 		std::wcout << L"Select Device Number: ";
 		std::wcin >> selectDevice;
 		adm.changeDevice(devices[std::stoi(selectDevice)], data);
-		adm.volume(data, 0.1f);
+		adm.volume(data, 0.01f);
 		adm.play(data);
 	}
 	while (adm.isPlaying(data) && continueApp)
 	{
+		std::wcout << adm.time(data) << lbrk;
 	}
+
+	std::wcout << L"End" << lbrk;
+	std::wstring tmp;
+	std::wcin >> tmp;
 }

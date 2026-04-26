@@ -34,10 +34,13 @@ namespace Win32
 		double s = 0.0;
 		SampleToTime(in, h, m, s);
 		auto fmtInt = [](int digit) -> std::string {
-			return (digit < 10) ? std::format("0{}", digit) : std::format("{}", digit);
+			return (digit < 10) ? "0" + std::to_string(digit) : std::to_string(digit);
 			};
-		const std::string& fmtDbl = (s < 10.0) ? std::format("0{:.0f}", s) : std::format("{:.0f}", s);
-		return std::format("{}:{}:{}", fmtInt(h), fmtInt(m), fmtDbl);
+		auto fmtDbl = [](double digit) -> std::string {
+			return std::to_string(digit).substr(2, 2);
+			};
+
+		return (fmtInt(h) + ":" + fmtInt(m) + ":" + fmtInt((int)s) + "." + fmtDbl(s));
 	}
 	static std::wstring ConvertTimeFormatW(double in)
 	{
@@ -46,10 +49,13 @@ namespace Win32
 		double s = 0.0;
 		SampleToTime(in, h, m, s);
 		auto fmtInt = [](int digit) -> std::wstring {
-			return (digit < 10) ? std::format(L"0{}", digit) : std::format(L"{}", digit);
-			};
-		const std::wstring& fmtDbl = (s < 10.0) ? std::format(L"0{:.0f}", s) : std::format(L"{:.0f}", s);
-		return std::format(L"{}:{}:{}", fmtInt(h), fmtInt(m), fmtDbl);
+			return (digit < 10) ? L"0"+ std::to_wstring(digit) : std::to_wstring(digit);
+		};
+		auto fmtDbl = [](double digit) -> std::wstring {
+			return (digit < 10) ? std::to_wstring(digit).substr(2, 2) : std::to_wstring(digit).substr(3, 2);
+		};
+
+		return (fmtInt(h) + L":" + fmtInt(m) + L":" + fmtInt((int)s) + L"." + fmtDbl(s));
 	}
 	static WAVEFORMATEX ConvertWaveFormat(const AudioInfo& af)
 	{
@@ -63,9 +69,6 @@ namespace Win32
 			NULL
 		};
 	}
-
-
-
 
 	//class AudioMaster begin
 	AudioMaster::AudioMaster(const std::wstring& path)
