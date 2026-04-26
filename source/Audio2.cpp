@@ -543,4 +543,16 @@ namespace Win32
 			)
 		);
 	}
+	size_t AudioMonitor::sample(const AudioMaster& amm) const
+	{
+		if (!amm.sourceVoice)
+		{
+			return 0l;
+		}
+
+		XAUDIO2_VOICE_STATE state{};
+		amm.sourceVoice->GetState(&state);
+
+		return state.SamplesPlayed;
+	}
 }

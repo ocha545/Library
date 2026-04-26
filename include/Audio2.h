@@ -85,6 +85,6 @@ namespace Win32
 		void stop(const AudioMaster& amm) const;
 		std::wstring length(const AudioMaster& amm) const;
 		std::wstring time(const AudioMaster& amm) const;
-		std::wstring fineTime(const AudioMaster& amm) const;
+		size_t sample(const AudioMaster& amm) const;
 	};
 }
