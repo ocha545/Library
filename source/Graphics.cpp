@@ -902,8 +902,8 @@ namespace Win32
 				XMMatrixRotationX(cmd.angleX) *							//X回転
 				XMMatrixRotationY(cmd.angleY) *							//Y回転
 				XMMatrixRotationZ(cmd.angleZ) *							//Z回転
-				XMMatrixScaling(cmd.scale, cmd.scale, 1.0f) *		//スケール
-				XMMatrixTranslation(-cx, -cy, 0.0f) *						//回転用座標
+				XMMatrixScaling(cmd.scale, cmd.scale, 1.0f) *			//スケール
+				XMMatrixTranslation(-cx, -cy, 0.0f) *					//回転用座標
 				XMMatrixTranslation(cmd.pos.x, cmd.pos.y, cmd.pos.z) *	//座標
 				XMMatrixOrthographicOffCenterLH(						//座標変換
 					0.0f, Core::viewPort.Width,

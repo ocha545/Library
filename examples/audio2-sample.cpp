@@ -41,7 +41,7 @@ int main()
 	}
 	while (adm.isPlaying(data) && continueApp)
 	{
-		std::wcout << adm.time(data) << lbrk;
+		std::wcout << adm.time(data) << L" : " << adm.sample(data) << lbrk;
 	}
 
 	std::wcout << L"End" << lbrk;

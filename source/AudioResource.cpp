@@ -4,18 +4,13 @@ namespace Win32
 {
 	AudioMetaData2::AudioMetaData2(const TagLib::Tag* tag, bool disableImage)
 	{
-		allTag = std::format(
-			L"{}{}{}{}{}{}{}{}{}",
-			tag->title().toWString(),
-			SEPARATOR,
-			tag->artist().toWString(),
-			SEPARATOR,
-			tag->album().toWString(),
-			SEPARATOR,
-			tag->genre().toWString(),
-			SEPARATOR,
-			tag->comment().toWString()
-		);
+		allTag =
+			tag->title().toWString() + SEPARATOR +
+			tag->artist().toWString() + SEPARATOR +
+			tag->album().toWString() + SEPARATOR +
+			tag->genre().toWString() + SEPARATOR +
+			tag->comment().toWString();
+
 		t = tag->track();
 		y = tag->year();
 //		if (!disableImage)
@@ -27,14 +22,6 @@ namespace Win32
 			outFile.close();
 			j = Image{ L"cover.jpeg" };
 			std::filesystem::remove(L"cover.jpeg");
-
-			std::wcout << std::format(L"{}{}{}{}{}",
-				title(),
-				artist(),
-				album(),
-				genre(),
-				comment()
-			);
 		}
 	}
 

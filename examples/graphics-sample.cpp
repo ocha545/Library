@@ -5,7 +5,7 @@ using namespace Win32;
 int main()
 {
 	Window window{ 960, 720, L"ぐらふぃくす", Position::Centering };
-	GraphicsXI::ClearColor(Color(0));
+	GraphicsXI::SetClearColor(Color(0));
 	GraphicsXI gfx{ window.getHandle(), window.getInstance() };
 
 	window.show();
