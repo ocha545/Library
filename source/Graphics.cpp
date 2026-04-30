@@ -87,6 +87,8 @@ namespace Win32
 
 		ComPtr<ID3D11Texture2D> tmp = nullptr;
 		HRESULT Hr = Core::device->CreateTexture2D(&desc, &data, tmp.GetAddressOf());
+		assert(SUCCEEDED(Hr));
+		AST_NULL(tmp.Get());
 		return tmp;
 	}
 	ComPtr<ID3D11Texture2D> Core::BShape::createTexture(int width, int height, const std::vector<Color>& pixels)
@@ -109,6 +111,8 @@ namespace Win32
 
 		ComPtr<ID3D11Texture2D> tmp = nullptr;
 		HRESULT Hr = Core::device->CreateTexture2D(&desc, &data, tmp.GetAddressOf());
+		assert(SUCCEEDED(Hr));
+		AST_NULL(tmp.Get());
 		return tmp;
 	}
 	ComPtr<ID3D11Texture2D> Core::BShape::createTexture(const D3D11_TEXTURE2D_DESC* desc, const D3D11_SUBRESOURCE_DATA* data)
@@ -116,7 +120,7 @@ namespace Win32
 		ComPtr<ID3D11Texture2D> tex;
 		HRESULT Hr = Core::device->CreateTexture2D(desc, data, tex.GetAddressOf());
 		assert(SUCCEEDED(Hr));
-		AST_NULL(tex);
+		AST_NULL(tex.Get());
 		return tex;
 	}
 	ComPtr<ID3D11Texture2D> Core::BShape::createDynamicTexture(const Image& image)
@@ -139,6 +143,8 @@ namespace Win32
 
 		ComPtr<ID3D11Texture2D> tmp = nullptr;
 		HRESULT Hr = Core::device->CreateTexture2D(&desc, &data, tmp.GetAddressOf());
+		assert(SUCCEEDED(Hr));
+		AST_NULL(tmp.Get());
 		return tmp;
 	}
 	ComPtr<ID3D11ShaderResourceView> Core::BShape::createShaderResourceView(ID3D11Texture2D* tex, const D3D11_SHADER_RESOURCE_VIEW_DESC* desc)
@@ -146,7 +152,7 @@ namespace Win32
 		ComPtr<ID3D11ShaderResourceView> srv;
 		HRESULT Hr = Core::device->CreateShaderResourceView(tex, desc, srv.GetAddressOf());
 		assert(SUCCEEDED(Hr));
-		AST_NULL(srv);
+		AST_NULL(srv.Get());
 		return srv;
 	}
 
@@ -645,7 +651,8 @@ namespace Win32
 			AST_NULL(Core::context.Get());
 
 #ifdef _DEBUG
-			Hr = Core::device->QueryInterface(IID_PPV_ARGS(&Core::debug));
+//#error "aiue"
+			Hr = Core::device->QueryInterface(IID_PPV_ARGS(Core::debug.GetAddressOf()));
 			assert(SUCCEEDED(Hr));
 #endif
 		}
@@ -655,7 +662,7 @@ namespace Win32
 			//スワップチェインとバックバッファ作成
 			{
 				ComPtr<IDXGIFactory7> factory = nullptr;
-				Hr = CreateDXGIFactory2(0, IID_PPV_ARGS(&factory));
+				Hr = CreateDXGIFactory2(0, IID_PPV_ARGS(factory.GetAddressOf()));
 				assert(SUCCEEDED(Hr));
 
 				//スワップチェインの設定とか
@@ -675,11 +682,16 @@ namespace Win32
 			{
 				//バックバッファを取得
 				ComPtr<ID3D11Texture2D> backBuffer = nullptr;
-				Hr = Core::swapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
+				Hr = Core::swapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
 				assert(SUCCEEDED(Hr));
 
 				//ビューを作成
 				Hr = Core::device->CreateRenderTargetView(backBuffer.Get(), nullptr, Core::backBufferView.GetAddressOf());
+				if (FAILED(Hr)  || Core::backBufferView.Get() == nullptr ||
+					Core::backBufferView.Get() == NULL)
+				{
+					throw;
+				}
 			}
 		}
 

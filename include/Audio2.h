@@ -1,8 +1,8 @@
 ﻿#pragma once
+#include"Pointer.h"
 #include"AudioResource.h"
 #include"AudioFormat.h"
 #include<string>
-#include<wrl.h>
 #include<xaudio2.h>
 #include<xaudio2fx.h>
 #include<xapo.h>
@@ -15,7 +15,6 @@
 namespace Win32
 {
 	using std::wstring_view;
-	using Microsoft::WRL::ComPtr;
 
 	static  std::wstring audioFormatString[(size_t)AudioFormat::MAX]{
 		L"None",
@@ -37,7 +36,6 @@ namespace Win32
 	class AudioMaster
 	{
 	private:
-//		XAUDIO2_VOICE_STATE state{};
 		AudioInfo info;
 		AudioFormat format;
 		AudioMetaData2 meta;

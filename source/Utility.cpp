@@ -2,11 +2,13 @@
 #pragma warning(push)
 #pragma warning(disable: 6262)//関数はスタックの '35036' バイトを使用します。データの一部をヒープに移動することを考慮してください。
 #pragma warning(disable: 26819)//switch ラベルどうしの間に、注釈の付いていないフォールスルーがあります (es.78)。
+#pragma warning(disable: 4996)//'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 #define STB_IMAGE_IMPLEMENTATION
 #include"../include/third_party/stb/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include"../include/third_party/stb/stb_image_write.h"
 #pragma warning(pop)
+
 #pragma warning(push)
 #pragma warning(disable: 4018)//'<': signed と unsigned の数値を比較しようとしました。
 namespace Win32

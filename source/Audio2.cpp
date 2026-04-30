@@ -302,7 +302,7 @@ namespace Win32
 			devices.clear();
 		}
 
-		for (int i = 0; i < deviceCount; ++i)
+		for (UINT i = 0; i < deviceCount; ++i)
 		{
 			ComPtr<IMMDevice> device = nullptr;
 			{

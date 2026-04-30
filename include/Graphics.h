@@ -14,10 +14,11 @@
 #include<iostream>
 #include<vector>
 #include<cmath>
-#include<wrl.h>
 #include<unordered_map>
 using namespace DirectX;
-using Microsoft::WRL::ComPtr;
+//#include<wrl.h>
+//using Microsoft::WRL::ComPtr;
+#include"Pointer.h"
 
 namespace Win32
 {
