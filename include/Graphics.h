@@ -136,7 +136,7 @@ namespace Win32
 			BShape& position(float x, float y);
 			BShape& color(ubyte r, ubyte g, ubyte b);
 			BShape& color(ubyte r, ubyte g, ubyte b, ubyte a);
-			BShape& color(const Color& color);
+			BShape& color(Color color);
 			BShape& rotationX(float r);
 			BShape& rotationY(float r);
 			BShape& rotationZ(float r);
@@ -328,7 +328,7 @@ namespace Win32
 		GraphicsXI(HWND parentHdl, HINSTANCE parentIns);
 		~GraphicsXI();
 
-		static void SetClearColor(const Color& color);
+		static void SetClearColor(Color color);
 
 		void clear();
 		void firstSetting();

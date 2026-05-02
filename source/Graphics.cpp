@@ -194,7 +194,7 @@ namespace Win32
 		command.runUpdate();
 		return *this;
 	}
-	Core::BShape& Core::BShape::color(const Color& color)
+	Core::BShape& Core::BShape::color(Color color)
 	{
 		command.rgba = color;
 		command.runUpdate();
@@ -854,7 +854,7 @@ namespace Win32
 	}
 
 
-	void GraphicsXI::SetClearColor(const Color& color)
+	void GraphicsXI::SetClearColor(Color color)
 	{
 		Core::swapChainClearColor = color;
 	}
