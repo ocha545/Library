@@ -687,11 +687,8 @@ namespace Win32
 
 				//ビューを作成
 				Hr = Core::device->CreateRenderTargetView(backBuffer.Get(), nullptr, Core::backBufferView.GetAddressOf());
-				if (FAILED(Hr)  || Core::backBufferView.Get() == nullptr ||
-					Core::backBufferView.Get() == NULL)
-				{
-					throw;
-				}
+				assert(SUCCEEDED(Hr));
+				AST_NULL(Core::backBufferView.Get());
 			}
 		}
 
@@ -851,6 +848,12 @@ namespace Win32
 		}
 	}
 
+	GraphicsXI::~GraphicsXI()
+	{
+		dispose();
+	}
+
+
 	void GraphicsXI::SetClearColor(const Color& color)
 	{
 		Core::swapChainClearColor = color;
@@ -981,6 +984,72 @@ namespace Win32
 	{
 		cmds.emplace_back(cmd);
 	}
+
+	void GraphicsXI::dispose()
+	{
+		std::cout << " Dest";
+		if (Core::blendState.Get())
+		{
+			Core::blendState.Reset();
+		}
+		if (Core::samplerState.Get())
+		{
+			Core::samplerState.Reset();
+		}
+		if (Core::drawTypeConstantBuffer.Get())
+		{
+			Core::drawTypeConstantBuffer.Reset();
+		}
+		if (Core::circleDataConstantBuffer.Get())
+		{
+			Core::circleDataConstantBuffer.Reset();
+		}
+		if (Core::diffuseConstantBuffer.Get())
+		{
+			Core::diffuseConstantBuffer.Reset();
+		}
+		if (Core::matrixConstantBuffer.Get())
+		{
+			Core::matrixConstantBuffer.Reset();
+		}
+		if (Core::rasterizerState.Get())
+		{
+			Core::rasterizerState.Reset();
+		}
+		if (Core::pShader.Get())
+		{
+			Core::pShader.Reset();
+		}
+		if (Core::vShader.Get())
+		{
+			Core::vShader.Reset();
+		}
+		if (Core::inputLayout.Get())
+		{
+			Core::inputLayout.Reset();
+		}
+		if (Core::backBufferView.Get())
+		{
+			Core::backBufferView.Reset();
+		}
+		if (Core::swapChain.Get())
+		{
+			Core::swapChain.Reset();
+		}
+		if (Core::debug.Get())
+		{
+			Core::debug.Reset();
+		}
+		if (Core::context.Get())
+		{
+			Core::context.Reset();
+		}
+		if (Core::device.Get())
+		{
+			Core::device.Reset();
+		}
+	}
+
 	const size_t GraphicsXI::drawCount() const
 	{
 		return cmds.size();

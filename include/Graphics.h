@@ -317,8 +317,8 @@ namespace Win32
 		};
 
 		HRESULT Hr;
-		std::vector<Core::DrawCommand> cmds;
 		bool isUpdate = true;
+		std::vector<Core::DrawCommand> cmds;
 
 		LARGE_INTEGER lint{};
 
@@ -326,6 +326,7 @@ namespace Win32
 		GraphicsXI() = default;
 		GraphicsXI(const GraphicsXI&) = default;
 		GraphicsXI(HWND parentHdl, HINSTANCE parentIns);
+		~GraphicsXI();
 
 		static void SetClearColor(const Color& color);
 
@@ -333,6 +334,7 @@ namespace Win32
 		void firstSetting();
 		void present();
 		void draw(const Core::DrawCommand& cmd);
+		void dispose();
 		const size_t drawCount() const;
 	};
 }
