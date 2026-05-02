@@ -78,16 +78,16 @@ namespace Win32
 	}
 
 	using std::wstring;
-//	using const wstring& = const std::wstring&;
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp);
 
 	namespace Core
 	{
+		//path
 		static wstring icon;// = LoadIconW(NULL, IDC_ICON);
 		static wstring cursor;// = LoadCursorW(NULL, IDC_ARROW);
-
-		//表示形式
+		
+		//表示形式 (未使用)
 		//[SECTION]: information
 		void WriteLog(const std::wstring& section, const std::wstring& info);
 	}
@@ -95,14 +95,15 @@ namespace Win32
 	class Window
 	{
 	private:
-		int width;
-		int height;
 		const wstring& title;
 		HWND window;
 		HINSTANCE instance;
 
 	public:
-		Window(int w, int h, const wstring& title);
+		int width;
+		int height;
+
+		Window(int w, int h, const wstring& title, bool startup = true);
 		Window(int w, int h, const wstring& title, Position position);
 		Window(int w, int h, const wstring& title, Position position, const wstring& className);
 		Window(int w, int h, const wstring& title, int x, int y);
