@@ -49,14 +49,14 @@ namespace Win32
 		Color(ubyte gs, ubyte alpha);
 		Color(const wstring& hex);
 
-		friend Color operator+(const Color& base, const Color& blend);
-		friend Color operator-(const Color& base, const Color& blend);
-		friend Color operator*(const Color& base, const Color& blend);
-		Color operator+=(const Color& blend);
-		Color operator-=(const Color& blend);
-		Color operator*=(const Color& blend);
-		friend bool operator==(const Color& left, const Color& right);
-		friend std::ostream& operator<<(std::ostream& os, const Color& color);
+		friend Color operator+(Color base, Color blend);
+		friend Color operator-(Color base, Color blend);
+		friend Color operator*(Color base, Color blend);
+		Color operator+=(Color blend);
+		Color operator-=(Color blend);
+		Color operator*=(Color blend);
+		friend bool operator==(Color left, Color right);
+		friend std::ostream& operator<<(std::ostream& os, Color color);
 		XMFLOAT4 floats() const;
 		static Color IntHEX(unsigned int hex);
 	};
@@ -102,19 +102,23 @@ namespace Win32
 
 		Color getPixel(int x, int y) const;
 
-		void setPixel(int x, int y, const Color& color);
+		void setPixel(int x, int y, Color color);
 
 		Image clipped(int x, int y, int width, int height) const;
 
 		Image scaled(int scale) const;
 
-		Image swapped(const Color& target, const Color& color) const;
+		Image swapped(Color target, Color color) const;
 
 		Image filtered(Filter mode) const;
+
+		Image framed(int px, Color frame)const;
 
 		Image flipV() const;
 
 		Image flipH() const;
+
+		std::vector<Image> divided(int width, int height, int divX, int  divY) const;
 
 		size_t size() const;
 

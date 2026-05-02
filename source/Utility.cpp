@@ -58,7 +58,7 @@ namespace Win32
 		}
 	}
 
-	Color operator+(const Color& base, const Color& blend)
+	Color operator+(Color base, Color blend)
 	{
 		return Color{
 			std::min<ubyte>(255, base.r + blend.r),
@@ -67,7 +67,7 @@ namespace Win32
 			std::min<ubyte>(255, base.a + blend.a)
 		};
 	}
-	Color operator-(const Color& base, const Color& blend)
+	Color operator-(Color base, Color blend)
 	{
 		return Color{
 			std::max<ubyte>(0, base.r - blend.r),
@@ -76,7 +76,7 @@ namespace Win32
 			std::max<ubyte>(0, base.a - blend.a)
 		};
 	}
-	Color operator*(const Color& base, const Color& blend)
+	Color operator*(Color base, Color blend)
 	{
 		return Color{
 			static_cast<ubyte>((base.r * blend.r) / 0xff),
@@ -85,27 +85,27 @@ namespace Win32
 			static_cast<ubyte>((base.a * blend.a) / 0xff)
 		};
 	}
-	Color Color::operator+=(const Color& blend)
+	Color Color::operator+=(Color blend)
 	{
 		*this = *this + blend;
 		return *this;
 	}
-	Color Color::operator-=(const Color& blend)
+	Color Color::operator-=(Color blend)
 	{
 		*this = *this - blend;
 		return *this;
 	}
-	Color Color::operator*=(const Color& blend)
+	Color Color::operator*=(Color blend)
 	{
 		*this = *this * blend;
 		return *this;
 	}
-	bool operator==(const Color& left, const Color& right)
+	bool operator==(Color left, Color right)
 	{
 		return ((left.r == right.r) && (left.g == right.g) && (left.b == right.b) && (left.a == right.a));
 	}
 
-	std::ostream& operator<<(std::ostream& os, const Color& color)
+	std::ostream& operator<<(std::ostream& os, Color color)
 	{
 		os << "R:" << (int)color.r
 			<< ", G:" << (int)color.g
@@ -248,7 +248,7 @@ namespace Win32
 		return colors[static_cast<size_t>(x + width * y)];
 	}
 
-	void Image::setPixel(int x, int y, const Color& color)
+	void Image::setPixel(int x, int y, Color color)
 	{
 		if (x < 0 || y < 0 || x >= width || y >= height)
 		{
@@ -309,7 +309,7 @@ namespace Win32
 		return out;
 	}
 
-	Image Image::swapped(const Color& target, const Color& color) const
+	Image Image::swapped(Color target, Color color) const
 	{
 		Image out = Image(*this);
 
@@ -363,6 +363,23 @@ namespace Win32
 		return out;
 	}
 
+	Image Image::framed(int px, Color frame) const
+	{
+		Image out{ *this };
+
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				if (x == 0 || y == 0 || x == width - 1 || y == height - 1)
+				{
+					out.setPixel(x, y, frame);
+				}
+			}
+		}
+		return out;
+	}
+
 	Image Image::flipV() const
 	{
 		Image out{ *this };
@@ -398,6 +415,21 @@ namespace Win32
 			}
 		}
 
+		return out;
+	}
+
+	std::vector<Image> Image::divided(int width, int height, int divX, int  divY) const
+	{
+		std::vector<Image> out;
+		for (int y = 0; y < divY; y++)
+		{
+			for (int x = 0; x < divX; x++)
+			{
+				out.emplace_back(
+					clipped(x * width, y * height, width, height)
+				);
+			}
+		}
 		return out;
 	}
 
