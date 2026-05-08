@@ -50,6 +50,8 @@ namespace Win32
 		static ComPtr<ID3D11SamplerState> samplerState = nullptr;
 		static ComPtr<ID3D11BlendState> blendState = nullptr;
 		static Color swapChainClearColor{ 128, 128, 255 };
+		static float virtualWidth  = NULL;
+		static float virtualHeight = NULL;
 
 		static std::unordered_map<wchar_t, Image> textMap{};
 
@@ -329,6 +331,7 @@ namespace Win32
 		~GraphicsXI();
 
 		static void SetClearColor(Color color);
+		static void SetVirtualResolution(int vw, int vh);
 
 		void clear();
 		void firstSetting();

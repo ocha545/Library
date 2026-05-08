@@ -751,6 +751,14 @@ namespace Win32
 			{
 				Core::viewPort.Width = (float)(Win32::GetWindowWidth(parentHdl));
 				Core::viewPort.Height = (float)(Win32::GetWindowHeight(parentHdl));
+				if(Core::virtualWidth == NULL)
+				{
+					Core::virtualWidth = (float)(Win32::GetWindowWidth(parentHdl));
+				}
+				if (Core::virtualHeight == NULL)
+				{
+					Core::virtualHeight = (float)(Win32::GetWindowHeight(parentHdl));
+				}
 				Core::viewPort.TopLeftX = 0;
 				Core::viewPort.TopLeftY = 0;
 				Core::viewPort.MinDepth = D3D11_MIN_DEPTH;
@@ -859,6 +867,12 @@ namespace Win32
 		Core::swapChainClearColor = color;
 	}
 
+	void GraphicsXI::SetVirtualResolution(int vw, int vh)
+	{
+		Core::virtualWidth = vw;
+		Core::virtualHeight = vh;
+	}
+
 	void GraphicsXI::clear()
 	{
 		Core::context->OMSetRenderTargets(1, Core::backBufferView.GetAddressOf(), nullptr);
@@ -921,8 +935,8 @@ namespace Win32
 				XMMatrixTranslation(-cx, -cy, 0.0f) *					//回転用座標
 				XMMatrixTranslation(cmd.pos.x, cmd.pos.y, cmd.pos.z) *	//座標
 				XMMatrixOrthographicOffCenterLH(						//座標変換
-					0.0f, Core::viewPort.Width,
-					Core::viewPort.Height, 0.0f,
+					0.0f, Core::virtualWidth,
+					Core::virtualHeight, 0.0f,
 					0.0f, 1.0f
 				);
 
