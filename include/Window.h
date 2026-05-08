@@ -117,22 +117,22 @@ namespace Win32
 		HWND getHandle() const;
 		HINSTANCE getInstance() const;
 
-		/// Windowクラスのインスタンスを親としてメッセージボックスを表示します
+		// Windowクラスのインスタンスを親としてメッセージボックスを表示します
 		Result showMessageBox(const wstring& title, const wstring& message, long flag) const;
 
-		/// Windowクラスのインスタンスを親としてメッセージボックスを表示します
-		/// flagはIcon::Information | Button::Okとしています
+		// Windowクラスのインスタンスを親としてメッセージボックスを表示します
+		// flagはIcon::Information | Button::Okとしています
 		Result showMessageBoxOk(const wstring& title, const wstring& message) const;
 
-		/// Windowクラスのインスタンスを親としてメッセージボックスを表示します
-		/// flagはIcon::Information | Button::YesNoとしています
+		// Windowクラスのインスタンスを親としてメッセージボックスを表示します
+		// flagはIcon::Information | Button::YesNoとしています
 		Result showMessageBoxYesNo(const wstring& title, const wstring& message) const;
 
 
-		/// カーソル画像をico形式で設定します
+		// カーソル画像をico形式で設定します
 		static void SetIcon(const wstring& path);
 
-		/// カーソル画像をcur形式で設定します
+		// カーソル画像をcur形式で設定します
 		static void SetCursor(const wstring& path);
 
 		static Result ShowMessageBox(HWND handle, HINSTANCE instance, const wstring& title, const wstring& message, long flag);
