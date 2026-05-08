@@ -14,6 +14,10 @@
 namespace Win32
 {
 	//struct Color begin
+	Color::Color() : 
+		r(0xff), g(0xff), b(0xff), a(0xff)
+	{
+	}
 	Color::Color(ubyte r, ubyte g, ubyte b) : 
 		r(r), g(g), b(b), a(0xff)
 	{

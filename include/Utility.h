@@ -41,7 +41,7 @@ namespace Win32
 		ubyte b;
 		ubyte a;
 
-		Color() = default;
+		Color();
 		Color(const Color&) = default;
 		Color(ubyte r, ubyte g, ubyte b);
 		Color(ubyte r, ubyte g, ubyte b, ubyte a);
