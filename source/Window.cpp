@@ -18,6 +18,15 @@ namespace Win32
 	{
 		switch (msg)
 		{
+		case WM_CREATE:
+			DragAcceptFiles(hWnd, TRUE);
+			return DefWindowProcW(hWnd, msg, wp, lp);
+
+		case WM_DROPFILES:
+			Core::drop = (HDROP)wp;
+			Core::isDrop = true;
+			return DefWindowProcW(hWnd, msg, wp, lp);
+
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
@@ -26,61 +35,7 @@ namespace Win32
 			return DefWindowProcW(hWnd, msg, wp, lp);
 		}
 	}
-/*
-	Window::Window(int w, int h, const wstring& title)
-		: width(w), height(h), title(title),
-		  window(nullptr),
-		  instance(GetModuleHandleW(nullptr))
-	{
-		int x = (::GetSystemMetrics(SM_CXSCREEN) - width) >> 1;
-		int y = (::GetSystemMetrics(SM_CYSCREEN) - height) >> 1;
-		const wchar_t className[] = L"Win32Window by otya!";
 
-		//ウィンドウの登録
-		{
-			WNDCLASSEXW windowClass{};
-			windowClass.cbSize = sizeof(WNDCLASSEXW);
-			windowClass.style = CS_HREDRAW | CS_VREDRAW;
-			windowClass.lpfnWndProc = WndProc;
-			windowClass.hInstance = instance;
-			if (!Core::icon.empty()) {
-				windowClass.hIcon = (HICON)LoadImageW(instance, Core::icon.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
-			}
-			else {
-				windowClass.hIcon = LoadIconW(NULL, IDC_ICON);
-			}
-
-			if (!Core::cursor.empty()) {
-				windowClass.hCursor = (HICON)LoadImageW(instance, Core::cursor.c_str(), IMAGE_CURSOR, 0, 0, LR_LOADFROMFILE);
-			}
-			else {
-				windowClass.hCursor = LoadCursorW(NULL, IDC_ARROW);
-			}
-			windowClass.hbrBackground = (HBRUSH)GetStockObject(DKGRAY_BRUSH);
-			windowClass.lpszClassName = className;
-			RegisterClassExW(&windowClass);
-		}
-		//ウィンドウの作成
-		{
-			RECT windowRect{};
-			windowRect.left = 0;
-			windowRect.top = 0;
-			windowRect.right = width;
-			windowRect.bottom = height;
-			AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
-			//ウィンドウの使える領域にする
-			//タイトルバーも考慮されたウィンドウサイズになる
-			int windowWidth = windowRect.right - windowRect.left;
-			int windowHeight = windowRect.bottom - windowRect.top;
-
-			window = CreateWindowExW(
-				NULL, className, title.c_str(), WS_OVERLAPPEDWINDOW,
-				x, y, windowWidth, windowHeight,
-				NULL, FALSE, instance, NULL
-			);
-		}
-	}
-*/
 	Window::Window(int w, int h, const wstring& title, bool startup)
 		: width(w), height(h), title(title),
 		window(nullptr),
@@ -404,6 +359,29 @@ namespace Win32
 	{
 		return this->instance;
 	}
+	bool Window::isDropFile() const
+	{
+		return Core::isDrop;
+	}
+	std::vector<wstring> Window::getDropFileName() const
+	{
+		std::vector<wstring> outFiles;
+		UINT fileCount = ::DragQueryFileW(Core::drop, 0xFFFFFFFF, NULL, 0);
+		for (UINT i = 0; i < fileCount; i++)
+		{
+			wchar_t filePath[MAX_PATH];
+			::DragQueryFileW(Core::drop, i, filePath, MAX_PATH);
+
+			wstring tmp{ filePath, wcslen(filePath) };
+
+			outFiles.emplace_back(tmp);
+		}
+		::DragFinish(Core::drop);
+		Core::isDrop = false;
+
+		return outFiles;
+	}
+
 
 	Result Window::showMessageBox(const wstring& title, const wstring& message, long flag) const
 	{

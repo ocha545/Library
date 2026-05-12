@@ -23,5 +23,12 @@ int main()
 
 	while (window.update())
 	{
+		if (window.isDropFile())
+		{
+			for (const auto& file : window.getDropFileName())
+			{
+				window.showMessageBoxOk(L"ファイルがドロップされました！", L"Paath:" + file);
+			}
+		}
 	}
 }

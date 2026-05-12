@@ -86,6 +86,8 @@ namespace Win32
 		//path
 		static wstring icon;// = LoadIconW(NULL, IDC_ICON);
 		static wstring cursor;// = LoadCursorW(NULL, IDC_ARROW);
+		static HDROP drop{};
+		static bool isDrop = false;
 		
 		//表示形式 (未使用)
 		//[SECTION]: information
@@ -116,6 +118,8 @@ namespace Win32
 
 		HWND getHandle() const;
 		HINSTANCE getInstance() const;
+		bool isDropFile() const;
+		std::vector<wstring> getDropFileName() const;
 
 		// Windowクラスのインスタンスを親としてメッセージボックスを表示します
 		Result showMessageBox(const wstring& title, const wstring& message, long flag) const;
