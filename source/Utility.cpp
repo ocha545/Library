@@ -192,6 +192,21 @@ namespace Win32
 		colors.clear();
 		colors.resize(size);
 	}
+	Image::Image(int width, int height, Color singleColor)
+		: width(width), height(height)
+	{
+		const size_t size = static_cast<size_t>(width * height);
+		if (size > SIZE_MAX) throw std::runtime_error("データサイズが大きすぎます！");
+
+		colors.clear();
+		colors.resize(size);
+
+		for (auto& color : colors)
+		{
+			color = singleColor;
+		}
+	}
+
 	Image::Image(int width, int height, const Color* rawData)
 		: width(width), height(height)
 	{

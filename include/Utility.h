@@ -93,6 +93,8 @@ namespace Win32
 		Image(wstring_view path);
 		//大きさのみ設定します
 		Image(int width, int height);
+		//一つの色の画像を作成します
+		Image(int width, int height, Color singleColor);
 		//生の色データから読み込みます
 		Image(int width, int height, const Color* rawData);
 		//色データから読み込みます
