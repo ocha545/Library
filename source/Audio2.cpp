@@ -500,6 +500,15 @@ namespace Win32
 		{
 			seek(amm, 0.0f);
 		}
+		play(amm);
+	}
+
+	void AudioMonitor::reset(const AudioMaster& amm) const
+	{
+		if (amm.sourceVoice)
+		{
+			seek(amm, 0.0f);
+		}
 	}
 
 	void AudioMonitor::play(const AudioMaster& amm) const

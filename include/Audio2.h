@@ -79,6 +79,7 @@ namespace Win32
 		void swap(AudioMonitor& monitor);
 		void volume(const AudioMaster& amm, float volume) const;
 		void restart(const AudioMaster& amm) const;
+		void reset(const AudioMaster& amm) const;
 		void play(const AudioMaster& amm) const;
 		void stop(const AudioMaster& amm) const;
 		std::wstring length(const AudioMaster& amm) const;
