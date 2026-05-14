@@ -124,14 +124,18 @@ namespace Win32
 	}
 	AudioMaster::~AudioMaster()
 	{
+		internalDestroy();
 		pcm.clear();
 	}
 
 
 	void AudioMaster::internalDestroy()
 	{
-		sourceVoice->Stop();
-		sourceVoice->DestroyVoice();
+		if (sourceVoice)
+		{
+			sourceVoice->Stop();
+			sourceVoice->DestroyVoice();
+		}
 	}
 
 	AudioFormat AudioMaster::checkFormat(const std::wstring& path)
@@ -383,16 +387,14 @@ namespace Win32
 		if (FAILED(hres))
 		{
 			internalDestroy();
-			return false;
-//			throw std::runtime_error("ソースボイスの作成に失敗しました");
+			return false; //ソースボイスの作成に失敗しました
 		}
 		XAUDIO2_BUFFER xAudio2Buffer{};
 
 		const uint64_t audioByteCount = static_cast<uint64_t>(amm.getData().size()) * sizeof(int16_t);
 		if (audioByteCount > (std::numeric_limits<uint64_t>::max)())
 		{
-			return false;
-//			throw std::runtime_error("音声データが大きすぎてXAudio2に送れません");
+			return false;//音声データが大きすぎてXAudio2に送れません
 		}
 
 		xAudio2Buffer.pAudioData = reinterpret_cast<const BYTE*>(amm.getData().data());
@@ -406,7 +408,6 @@ namespace Win32
 			amm.sourceVoice->DestroyVoice();
 			internalDestroy();
 			return false;
-//			throw std::runtime_error(std::format("SourceBufferの送信に失敗しました:{}", hres));
 		}
 		return true;
 	}
@@ -473,8 +474,9 @@ namespace Win32
 			return false;
 		}
 
-		hres = amm.sourceVoice->Start();
-		return SUCCEEDED(hres);
+//		hres = amm.sourceVoice->Start();
+//		return SUCCEEDED(hres);
+		return true;
 	}
 
 	void AudioMonitor::swap(AudioMonitor& monitor)
