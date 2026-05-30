@@ -19,7 +19,24 @@ namespace Win32
 		switch (msg)
 		{
 		case WM_CREATE:
-			DragAcceptFiles(hWnd, TRUE);
+			DragAcceptFiles(hWnd, TRUE);//ファイルの画面へのドラッグを許可
+			{
+				RAWINPUTDEVICE rawInputDevices[2]{
+					RAWINPUTDEVICE {	//キーボード用RawInput
+						.usUsagePage = 0x01,
+						.usUsage = 0x06,
+						.dwFlags = RIDEV_INPUTSINK,
+						.hwndTarget = hWnd
+					},
+					RAWINPUTDEVICE {	//マウス用RawInput
+						.usUsagePage = 0x01,
+						.usUsage = 0x02,
+						.dwFlags = RIDEV_INPUTSINK,
+						.hwndTarget = hWnd
+					}
+				};
+				RegisterRawInputDevices(rawInputDevices, 2, sizeof(RAWINPUTDEVICE));
+			}
 			return DefWindowProcW(hWnd, msg, wp, lp);
 
 		case WM_DROPFILES:
@@ -27,9 +44,45 @@ namespace Win32
 			Core::isDrop = true;
 			return DefWindowProcW(hWnd, msg, wp, lp);
 
+		case WM_CLOSE:
+			DestroyWindow(hWnd);
+			return 0;
+
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
+
+		case WM_INPUT:
+			Core::prevKeys = Core::downKeys;
+			{
+				RAWINPUT rawInput{};
+				UINT rawInputSize = sizeof(rawInput);
+				GetRawInputData((HRAWINPUT)lp, RID_INPUT, &rawInput, &rawInputSize, sizeof(RAWINPUTHEADER));
+				if (rawInput.header.dwType == RIM_TYPEKEYBOARD)
+				{
+					const RAWKEYBOARD& kbd = rawInput.data.keyboard;
+					if (kbd.VKey == 0xff)
+					{
+						return DefWindowProcW(hWnd, msg, wp, lp);
+					}
+					else if (!(kbd.Flags & RI_KEY_BREAK))
+					{
+						//フラグの登録
+						Core::downKeys.insert(kbd.VKey);
+						std::cout << "InsertKey: " << kbd.VKey << "\n";
+					}
+					else
+					{
+						Core::downKeys.erase(kbd.VKey);
+						std::cout << "EraseKey: " << kbd.VKey << "\n";
+					}
+				}
+				else
+				{
+					//マウス用RawInputは今後暇な時実装します。
+				}
+			}
+			return DefWindowProcW(hWnd, msg, wp, lp);
 
 		default:
 			return DefWindowProcW(hWnd, msg, wp, lp);
@@ -349,6 +402,20 @@ namespace Win32
 	{
 		PostQuitMessage(0);
 		PostMessageW(window, WM_CLOSE, 0, 0);
+	}
+
+	bool Window::down(Key key)
+	{
+		return Core::prevKeys.count((UINT)key) == 0 && Core::downKeys.count((UINT)key) != 0;
+	}
+	bool Window::up(Key key)
+	{
+//		std::cout << "prev:" << Core::prevKeys.count((UINT)key) << ", down:" << Core::downKeys.count((UINT)key) << "\n";
+		return Core::prevKeys.count((UINT)key) != 0 && Core::downKeys.count((UINT)key) == 0;
+	}
+	bool Window::press(Key key)
+	{
+		return Core::downKeys.count((UINT)key) != 0;
 	}
 
 	HWND Window::getHandle() const

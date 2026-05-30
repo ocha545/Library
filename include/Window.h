@@ -7,6 +7,7 @@
 #include<format>
 #include<algorithm>
 #include<cwctype>
+#include<unordered_set>
 #include"Macros.h"
 #include"Helper.h"
 
@@ -55,18 +56,166 @@ namespace Win32
 		Asterisk = MB_ICONINFORMATION,
 		Information = MB_ICONINFORMATION,
 	};
+	enum class Key : UINT
+	{
+		Backspace = VK_BACK,
+		Tab = VK_TAB,
+		Clear = VK_CLEAR,
+		Enter = VK_RETURN,
+		Shift = VK_SHIFT,
+		Ctrl = VK_CONTROL,
+		Alt,
+		Pause,
+		CapsLock,
+		KANA,
+		IME_HANGUL = KANA,
+		IME_ON,
+		IME_JUNJA,
+		IME_Final,
+		IME_HANJA,
+		IME_KANJI = IME_HANJA,
+		IME_OFF = VK_IME_OFF,
+		Escape,
+		IME_CONVERT,
+		IME_NONCONVERT,
+		IME_ACCEPT,
+		IME_MODE_CHANGE,
+		Space,
+		PageUp,
+		PageDown,
+		End,
+		Home,
+		Left,
+		Up,
+		Right,
+		Down,
+		Select,
+		Print,
+		Execute,
+		Snapshot,
+		Insert,
+		Delete,
+		Help,
+		NUM_0 = 0x30,
+		NUM_1,
+		NUM_2,
+		NUM_3,
+		NUM_4,
+		NUM_5,
+		NUM_6,
+		NUM_7,
+		NUM_8,
+		NUM_9,
+		A = 0x41,
+		B,
+		C,
+		D,
+		E,
+		F,
+		G,
+		H,
+		I,
+		J,
+		K,
+		L,
+		M,
+		N,
+		O,
+		P,
+		Q,
+		R,
+		S,
+		T,
+		U,
+		V,
+		W,
+		X,
+		Y,
+		Z,
+		Win,
+		RWin,
+		Apps,
+		Sleep = VK_SLEEP,
+		NUMPAD_0,
+		NUMPAD_1,
+		NUMPAD_2,
+		NUMPAD_3,
+		NUMPAD_4,
+		NUMPAD_5,
+		NUMPAD_6,
+		NUMPAD_7,
+		NUMPAD_8,
+		NUMPAD_9,
+		Multiply,
+		Add,
+		Separator,
+		Subtract,
+		Decimal,
+		Divide,
+		F1,
+		F2,
+		F3,
+		F4,
+		F5,
+		F6,
+		F7,
+		F8,
+		F9,
+		F10,
+		F11,
+		F12,
+		F13,
+		F14,
+		F15,
+		F16,
+		F17,
+		F18,
+		F19,
+		F20,
+		F21,
+		F22,
+		F23,
+		F24,
+		NumLock = VK_NUMLOCK,
+		Scroll,
+		LShift = VK_LSHIFT,
+		RShift,
+		LCtrl,
+		RCtrl,
+		LAlt,
+		RAlt,
+		BROWSER_BACK,
+		BROWSER_FORWARD,
+		BROWSER_REFRESH,
+		BROWSER_STOP,
+		BROWSER_SEARCH,
+		BROWSER_FAVORITES,
+		BROWSER_HOME,
+		VOLUMME_Mute,
+		VOLUMME_Down,
+		VOLUMME_Up,
+		MEDIA_NextTrack,
+		MEDIA_PrevTrack,
+		MEDIA_STOP,
+		MEDIA_PLAY_PAUSE,
+		LAUNCH_MAIL,
+		LAUNCH_MEDIA_SELECT,
+		LAUNCH_APP1,
+		LAUNCH_APP2,
+		//ここから先は不要っぽいので書きません
+	};
 
 	inline Position operator|(Position a, Position b)
 	{
 		return static_cast<Position>(
 			static_cast<long>(a) | static_cast<long>(b)
-			);
+		);
 	}
 	inline Position operator&(Position a, Position b)
 	{
 		return static_cast<Position>(
 			static_cast<long>(a) & static_cast<long>(b)
-			);
+		);
 	}
 	inline long operator|(Button a, Icon b)
 	{
@@ -75,6 +224,10 @@ namespace Win32
 	inline long operator|(Icon a, Button b)
 	{
 		return static_cast<long>(a) | static_cast<long>(b);
+	}
+	inline Key operator|(Key a, Key b)
+	{
+		return (Key)((UINT)a | (UINT)b);
 	}
 
 	using std::wstring;
@@ -88,7 +241,10 @@ namespace Win32
 		static wstring cursor;// = LoadCursorW(NULL, IDC_ARROW);
 		static HDROP drop{};
 		static bool isDrop = false;
-		
+		static std::unordered_set<UINT> downKeys;
+		static std::unordered_set<UINT> prevKeys;
+
+
 		//表示形式 (未使用)
 		//[SECTION]: information
 		void WriteLog(const std::wstring& section, const std::wstring& info);
@@ -115,6 +271,9 @@ namespace Win32
 		bool update() const;
 		void show() const;
 		void close() const;
+		bool down(Key key);
+		bool up(Key key);
+		bool press(Key key);
 
 		HWND getHandle() const;
 		HINSTANCE getInstance() const;
