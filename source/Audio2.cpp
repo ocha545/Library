@@ -122,6 +122,15 @@ namespace Win32
 			break;
 		}
 	}
+	AudioMaster::AudioMaster(const AudioMaster& copy)
+	{
+		info = copy.info;
+		format = copy.format;
+		meta = copy.meta;
+		pcm = copy.pcm;
+		sourceVoice = copy.sourceVoice;
+	}
+
 	AudioMaster::~AudioMaster()
 	{
 		internalDestroy();
@@ -186,7 +195,6 @@ namespace Win32
 	{
 		return pcm;
 	}
-
 	//class AudioMaster end
 
 	
@@ -474,8 +482,6 @@ namespace Win32
 			return false;
 		}
 
-//		hres = amm.sourceVoice->Start();
-//		return SUCCEEDED(hres);
 		return true;
 	}
 

@@ -45,6 +45,7 @@ namespace Win32
 	public:
 		AudioMaster() : info({}), format(AudioFormat::NONE), meta({}), pcm({}) {
 		}
+		AudioMaster(const AudioMaster& copy);
 		AudioMaster(const std::wstring& path);
 		~AudioMaster();
 
@@ -53,6 +54,7 @@ namespace Win32
 		std::wstring getFormatString() const;
 		AudioMetaData2 getMetaData() const;
 		const std::vector<short>& getData() const;
+
 		void internalDestroy();
 
 		IXAudio2SourceVoice* sourceVoice = nullptr;
