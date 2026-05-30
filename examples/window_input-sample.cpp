@@ -7,9 +7,9 @@ int main()
 
 	while (window.update())
 	{
-		if (window.down(Key::Alt))
+		if (window.down(Key::A))
 		{
-			window.showMessageBox(L"入力！", L"Gキーが押されました！", Icon::Information | Button::Ok);
+			window.showMessageBox(L"入力！", L"Aキーが押されました！", Icon::Information | Button::Ok);
 		}
 	}
 
