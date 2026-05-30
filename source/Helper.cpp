@@ -42,7 +42,7 @@ namespace Win32
 		{
 			return std::filesystem::path(wide).string();
 		}
-       std::vector<std::wstring> Split(const wstring& text, wchar_t spl)
+		std::vector<std::wstring> Split(const wstring& text, wchar_t spl)
 		{
 			std::vector<std::wstring> out;
 			std::wstringstream wstream{ text };

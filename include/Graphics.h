@@ -181,8 +181,6 @@ namespace Win32
 		Texture(const Image& image);
 	};
 
-
-
 	class Text
 	{
 	private:

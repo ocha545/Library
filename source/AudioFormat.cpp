@@ -1,4 +1,9 @@
 ﻿#include"../include/AudioFormat.h"
+// class MP3
+// class WAVE
+// class FLAC
+// class OGG
+// class OPUS
 
 namespace Win32
 {

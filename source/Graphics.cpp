@@ -651,7 +651,6 @@ namespace Win32
 			AST_NULL(Core::context.Get());
 
 #ifdef _DEBUG
-//#error "aiue"
 			Hr = Core::device->QueryInterface(IID_PPV_ARGS(Core::debug.GetAddressOf()));
 			assert(SUCCEEDED(Hr));
 #endif

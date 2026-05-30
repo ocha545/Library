@@ -1,4 +1,6 @@
 ﻿#include"../include/AudioResource.h"
+// class AudioMetaData2
+
 
 namespace Win32
 {
