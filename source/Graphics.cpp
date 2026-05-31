@@ -868,8 +868,8 @@ namespace Win32
 
 	void GraphicsXI::SetVirtualResolution(int vw, int vh)
 	{
-		Core::virtualWidth = vw;
-		Core::virtualHeight = vh;
+		Core::virtualWidth = (float)vw;
+		Core::virtualHeight = (float)vh;
 	}
 
 	void GraphicsXI::clear()
