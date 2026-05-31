@@ -30,7 +30,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{eeba1130-e37c-47b2-8072-dd03669c21fb}</ProjectGuid>
-    <RootNamespace>Library</RootNamespace>
+    <RootNamespace>LibWraper</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -126,7 +126,7 @@
       <AdditionalLibraryDirectories>$(LocalDebuggerWorkingDirectory)library\taglib\Debug;$(LocalDebuggerWorkingDirectory)library\libvorbis-1.3.7\Release;$(LocalDebuggerWorkingDirectory)library\libogg\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Lib>
-      <AdditionalDependencies>Shell32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;opusfile.lib;opus.lib</AdditionalDependencies>
+      <AdditionalDependencies>shell32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;opusfile.lib;opus.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(LocalDebuggerWorkingDirectory)library\opus\Debug;$(LocalDebuggerWorkingDirectory)library\taglib\Debug;$(LocalDebuggerWorkingDirectory)library\libvorbis-1.3.7\Win32\Debug;$(LocalDebuggerWorkingDirectory)library\libogg\Win32\Debug;$(LocalDebuggerWorkingDirectory)library\opusfile\Win32\Debug</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -143,7 +143,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Shell.lib;gdi32.lib;user32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;opusfile.lib;opus.lib</AdditionalDependencies>
+      <AdditionalDependencies>gdi32.lib;user32.lib;shell32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;opusfile.lib;opus.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(LocalDebuggerWorkingDirectory)library\opus\Debug;$(LocalDebuggerWorkingDirectory)library\taglib\Debug;$(LocalDebuggerWorkingDirectory)library\libvorbis-1.3.7\Win32\Debug;$(LocalDebuggerWorkingDirectory)library\libogg\Win32\Debug;$(LocalDebuggerWorkingDirectory)library\opusfile\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -174,7 +174,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(LocalDebuggerWorkingDirectory)library\taglib\Release;$(LocalDebuggerWorkingDirectory)library\opus\Release;$(LocalDebuggerWorkingDirectory)library\libvorbis-1.3.7\Win32\Release;$(LocalDebuggerWorkingDirectory)library\libogg\Win32\Release;$(LocalDebuggerWorkingDirectory)library\opusfile\Win32\Release-NoHTTP</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Shell32.libtag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;opusfile.lib;opus.lib</AdditionalDependencies>
+      <AdditionalDependencies>shell32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;opusfile.lib;opus.lib</AdditionalDependencies>
       <AdditionalOptions>/VERBOSE:LIB %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
@@ -191,12 +191,12 @@
     <Link>
       <SubSystem>NotSet</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Shell32.lib;user32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib</AdditionalDependencies>
+      <AdditionalDependencies>user32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(LocalDebuggerWorkingDirectory)library\taglib\Debug;$(LocalDebuggerWorkingDirectory)library\libvorbis-1.3.7\Release;$(LocalDebuggerWorkingDirectory)library\libogg\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(LocalDebuggerWorkingDirectory)library\opus\Debug;$(LocalDebuggerWorkingDirectory)library\taglib\Debug;$(LocalDebuggerWorkingDirectory)library\libvorbis-1.3.7\x64\Debug;$(LocalDebuggerWorkingDirectory)library\libogg\x64\Debug;$(LocalDebuggerWorkingDirectory)library\opusfile\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Shell32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;opusfile.lib;opus.lib</AdditionalDependencies>
+      <AdditionalDependencies>shell32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;opusfile.lib;opus.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugExe|x64'">
@@ -212,7 +212,7 @@
     <Link>
       <SubSystem>NotSet</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Shell32.lib;gdi32.lib;user32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;opusfile.lib;opus.lib</AdditionalDependencies>
+      <AdditionalDependencies>gdi32.lib;user32.lib;shell32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;opusfile.lib;opus.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(LocalDebuggerWorkingDirectory)library\opus\Debug;$(LocalDebuggerWorkingDirectory)library\taglib\Debug;$(LocalDebuggerWorkingDirectory)library\libvorbis-1.3.7\x64\Debug;$(LocalDebuggerWorkingDirectory)library\libogg\x64\Debug;$(LocalDebuggerWorkingDirectory)library\opusfile\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -244,7 +244,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(LocalDebuggerWorkingDirectory)library\taglib\Release;$(LocalDebuggerWorkingDirectory)library\opus\Release;$(LocalDebuggerWorkingDirectory)library\libvorbis-1.3.7\x64\Release;$(LocalDebuggerWorkingDirectory)library\libogg\x64\Release;$(LocalDebuggerWorkingDirectory)library\opusfile\x64\Release-NoHTTP</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Shell32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;opusfile.lib;opus.lib</AdditionalDependencies>
+      <AdditionalDependencies>shell32.lib;tag.lib;xaudio2.lib;libogg.lib;libvorbis_static.lib;libvorbisfile_static.lib;opusfile.lib;opus.lib</AdditionalDependencies>
       <AdditionalOptions>/VERBOSE:LIB %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
@@ -262,6 +262,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugExe|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="examples\auduo-sample.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -271,7 +272,18 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugExe|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="examples\game-sample.cpp" />
+    <ClCompile Include="examples\game-sample.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugExe|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="examples\game_input-sample.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugExe|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="examples\graphics-sample.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugExe|Win32'">true</ExcludedFromBuild>
@@ -285,12 +297,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugExe|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="examples\keyInput-sample.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugExe|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugExe|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="examples\window-sample.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -299,6 +313,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugExe|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="examples\window_input-sample.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugExe|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugExe|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\Audio.cpp" />
     <ClCompile Include="source\Audio2.cpp" />
