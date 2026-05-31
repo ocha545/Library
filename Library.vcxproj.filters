@@ -5,19 +5,12 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="リソース ファイル">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{f1f363db-5562-4e01-bbc9-4a7c3eac032c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Bridge">
-      <UniqueIdentifier>{0b5d32b2-9642-470a-b2a9-314ea51939c2}</UniqueIdentifier>
     </Filter>
     <Filter Include="examples">
       <UniqueIdentifier>{003729bc-29f1-4234-ada8-25832f1236a8}</UniqueIdentifier>
