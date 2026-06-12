@@ -120,7 +120,14 @@ namespace Win32
 			}
 
 			pcm.resize(allFrameCount);
-			drwav_read_pcm_frames_s16(wav.get(), wav->totalPCMFrameCount, pcm.data());
+			if (wav->bitsPerSample == 8)
+			{
+				drwav_read_raw(wav.get(), wav->totalPCMFrameCount, pcm.data());
+			}
+			else
+			{
+				drwav_read_pcm_frames_s16(wav.get(), wav->totalPCMFrameCount, pcm.data());
+			}
 
 			info.FormatTag = WAVE_FORMAT_PCM;
 			info.Channels = static_cast<unsigned short>(wav->channels);
@@ -128,6 +135,7 @@ namespace Win32
 			info.BitsPerSample = wav->bitsPerSample;
 			info.BlockAlign = static_cast<unsigned short>(wav->channels * wav->bitsPerSample / 8);
 			info.AvgBytesPerSec = info.SampleRate * info.BlockAlign;
+			pcm.shrink_to_fit();
 
 			TagLib::FileRef tagFile(TagLib::FileName(path.c_str()), true);
 			if (tagFile.tag() && !tagFile.isNull())
