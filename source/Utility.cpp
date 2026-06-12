@@ -44,7 +44,7 @@ namespace Win32
 	{
 		if (hex.length() < 7)
 		{
-			throw std::invalid_argument("カラーコードの形式が無効です(#RRGGBBの形式で入力してください)");
+			throw std::invalid_argument("カラーコードの形式が無効です( #RRGGBB の形式で入力してください)");
 		}
 
 		wstring hexDigit = hex.substr(1);
