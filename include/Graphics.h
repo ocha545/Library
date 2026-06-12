@@ -134,8 +134,11 @@ namespace Win32
 			BShape(const DrawCommand&);
 			~BShape();
 
-			bool intersect(const DrawCommand& cmd);
+			bool intersect(const DrawCommand& cmd) const;
+			float getCenterPosX() const;
+			float getCenterPosY() const;
 			BShape& position(float x, float y);
+			BShape& positionAt(float x, float y);
 			BShape& color(ubyte r, ubyte g, ubyte b);
 			BShape& color(ubyte r, ubyte g, ubyte b, ubyte a);
 			BShape& color(Color color);
@@ -179,6 +182,7 @@ namespace Win32
 		Texture() = default;
 		Texture(int width, int height, std::vector<Color> pixels);
 		Texture(const Image& image);
+		ComPtr<ID3D11ShaderResourceView> GetShaderResourceView() const;
 	};
 
 	class Text
@@ -306,6 +310,58 @@ namespace Win32
 		static Image GetTextImage(const wstring& text);
 	};
 
+	class AtlasText
+	{
+	private:
+		struct Glyph
+		{
+
+			short offsetX, offsetY;
+			short advance;
+		};
+		Glyph glyphs[10]{
+
+		};
+		Texture fontAtlas = Texture{ Image{ L"images/font/nums.png" } };
+
+		ComPtr<ID3D11ShaderResourceView> srv{};
+		ComPtr<ID3D11Buffer> vb{};
+
+	public:
+		AtlasText()
+		{
+			Vertex vts[] =
+			{
+				{  0.0f, 0.0f, 1.0f },
+				{  0.0f, 7.0f, 1.0f },
+				{ 70.0f, 7.0f, 1.0f },
+				{ 70.0f, 0.0f, 1.0f },
+			};
+
+			D3D11_BUFFER_DESC desc{};
+			desc.Usage = D3D11_USAGE_DYNAMIC;
+			desc.ByteWidth = sizeof(vts);
+			desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+
+			D3D11_SUBRESOURCE_DATA data{};
+			data.pSysMem = vts;
+			Core::device->CreateBuffer(&desc, &data, vb.GetAddressOf());
+
+
+		}
+
+		Core::DrawCommand get()
+		{
+			return Core::DrawCommand{
+				.vertexBuffer = vb,
+				.srv = fontAtlas.GetShaderResourceView(),
+				.type = Core::CommandType::TEXTURE
+			};
+		}
+	};
+
 	class GraphicsXI
 	{
 	private:
@@ -334,7 +390,8 @@ namespace Win32
 		void clear();
 		void firstSetting();
 		void present();
-		void draw(const Core::DrawCommand& cmd);
+		void draw2(const Core::DrawCommand& cmd);
+		void draw(const Core::BShape& bs);
 		void dispose();
 		const size_t drawCount() const;
 	};

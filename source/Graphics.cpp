@@ -167,7 +167,7 @@ namespace Win32
 	}
 
 
-	bool Core::BShape::intersect(const DrawCommand& s)
+	bool Core::BShape::intersect(const DrawCommand& s) const
 	{
 		const DrawCommand& c = command;
 		return(
@@ -177,9 +177,22 @@ namespace Win32
 			s.pos.y < c.pos.y + c.size.h
 		);
 	}
+	float Core::BShape::getCenterPosX() const
+	{
+		return command.pos.x + command.size.w / 2;
+	}
+	float Core::BShape::getCenterPosY() const
+	{
+		return command.pos.y + command.size.h / 2;
+	}
 	Core::BShape& Core::BShape::position(float x, float y)
 	{
 		command.pos = { x, y, 1.0f };
+		return *this;
+	}
+	Core::BShape& Core::BShape::positionAt(float x, float y)
+	{
+		command.pos = { x + command.size.w / 2, y + command.size.h / 2, 1.0f };
 		return *this;
 	}
 	Core::BShape& Core::BShape::color(ubyte r, ubyte g, ubyte b)
@@ -505,6 +518,11 @@ namespace Win32
 			).Get(), nullptr
 		);
 	}
+	ComPtr<ID3D11ShaderResourceView> Texture::GetShaderResourceView() const
+	{
+		return command.srv;
+	}
+
 	//class Texture end
 
 
@@ -563,6 +581,10 @@ namespace Win32
 		if (text.length() <= 0)
 		{
 			return Image{ getCharImagePath(L' ').first };
+		}
+		if (text.length() > 255)
+		{
+			return Image{};
 		}
 
 		auto [path, type] = getCharImagePath(text[0]);
@@ -993,9 +1015,14 @@ namespace Win32
 
 		cmds.clear();
 	}
-	void GraphicsXI::draw(const Core::DrawCommand& cmd)
+	void GraphicsXI::draw2(const Core::DrawCommand& cmd)
 	{
 		cmds.emplace_back(cmd);
+	}
+	
+	void GraphicsXI::draw(const Core::BShape& bs)
+	{
+		cmds.emplace_back(bs.get());
 	}
 
 	void GraphicsXI::dispose()
