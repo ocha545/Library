@@ -74,9 +74,12 @@ namespace Win32
 		~AudioMonitor();
 
 		std::vector<AudioDeviceInfo> enumerateDevices();
+
+		void masterVolume(float volume) const;
+
 		bool changeDevice(const AudioDeviceInfo& device, const AudioMaster& amm);
 		bool init(const AudioMaster& amm, int loopCount = 0);
-		bool isPlaying(const AudioMaster& amm);
+		bool isPlaying(const AudioMaster& amm) const;
 		bool seek(const AudioMaster& amm, float pos) const;
 		void swap(AudioMonitor& monitor);
 		void volume(const AudioMaster& amm, float volume) const;

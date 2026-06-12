@@ -368,6 +368,15 @@ namespace Win32
 		return devices;
 	}
 
+	void AudioMonitor::masterVolume(float volume) const
+	{
+		if (masterVoice)
+		{
+			masterVoice->SetVolume(volume);
+		}
+	}
+
+
 	bool AudioMonitor::changeDevice(const AudioDeviceInfo& device, const AudioMaster& amm)
 	{
 		if (device.deviceId.empty())
@@ -421,15 +430,15 @@ namespace Win32
 	}
 
 
-	bool AudioMonitor::isPlaying(const AudioMaster& amm)
+	bool AudioMonitor::isPlaying(const AudioMaster& amm) const
 	{
-		XAUDIO2_VOICE_STATE state{};
-		if(amm.sourceVoice)
+		if (amm.sourceVoice)
 		{
+			XAUDIO2_VOICE_STATE state{};
 			amm.sourceVoice->GetState(&state);
+			return state.BuffersQueued;
 		}
-		return (state.BuffersQueued);
-//		return true;
+		return false;
 	}
 
 	bool AudioMonitor::seek(const AudioMaster& amm, float pos) const
