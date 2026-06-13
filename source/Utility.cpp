@@ -343,6 +343,25 @@ namespace Win32
 		return out;
 	}
 
+	static unsigned short sm64rng(unsigned short input)
+	{
+		if (input == 0x560a)	input = 0;// prevent a two - number loop
+		unsigned short s0 = 0, s1 = 0;
+		s0 = (input << 8) & 0xffff;
+		s0 ^= input;
+		input = ((s0 & 0xff) << 8) | ((s0 & 0xff00) >> 8);
+		s0 = ((s0 & 0xff) << 1) ^ input;
+		s1 = (s0 >> 1) ^ 0xff80;
+		if ((s0 & 1) == 0)
+			if (s1 == 0xaa55)
+				input = 0;// reset cycle at 65, 114th number
+			else
+				input = s1 ^ 0x1FF4;
+		else
+			input = s1 ^ 0x8180;
+		return input;
+	}
+
 	Image Image::filtered(Filter mode) const
 	{
 		Image out{ *this };
@@ -359,8 +378,28 @@ namespace Win32
 			}
 			break;
 
-		case Filter::Mosaic:
-			break;
+		case Filter::Mosaic:{
+			//適切に動いてないかもしれない
+			int mosaicBlockSize = 2;
+			for (int y = 0; y < out.height / mosaicBlockSize; y++)
+			{
+				for (int x = 0; x < out.width / mosaicBlockSize; x++)
+				{
+					int index0 = y * out.width + x;
+					int index1 = y * out.width + (x + 1);
+					int index2 = (y + 1) * out.width + x;
+					int index3 = (y + 1) * out.width + (x + 1);
+					ubyte avg_r = (colors[index0].r + colors[index1].r + colors[index2].r + colors[index3].r) / 4;
+					ubyte avg_g = (colors[index0].g + colors[index1].g + colors[index2].g + colors[index3].g) / 4;
+					ubyte avg_b = (colors[index0].b + colors[index1].b + colors[index2].b + colors[index3].b) / 4;
+					ubyte avg_a = (colors[index0].a + colors[index1].a + colors[index2].a + colors[index3].a) / 4;
+					out.colors[index0] = Color(avg_r, avg_g, avg_b, avg_a);
+					out.colors[index1] = Color(avg_r, avg_g, avg_b, avg_a);
+					out.colors[index2] = Color(avg_r, avg_g, avg_b, avg_a);
+					out.colors[index3] = Color(avg_r, avg_g, avg_b, avg_a);
+				}
+			}
+		}break;
 
 		case Filter::Invert:
 			for (auto& rgb : out.colors)
@@ -372,11 +411,17 @@ namespace Win32
 			break;
 
 		case Filter::Noise:
+			ubyte threshold0 = 255;		//色の幅     0 ~ 255
+			ubyte threshold1 = 64;		//透明度の幅 0 ~ 255
+			unsigned short input0 = 0;	//色用の初期シード     0 ~ 65535
+			unsigned short input1 = 1;	//透明度用の初期シード 0 ~ 65535
 			for (auto& rgb : out.colors)
 			{
+				input0 = sm64rng(input0);
+				input1 = sm64rng(input1);
+				rgb *= Color(input0 % threshold0, input0 % threshold0, input0 % threshold0, 255 - input1 % threshold1);
 			}
 			break;
-
 		}
 
 		return out;
