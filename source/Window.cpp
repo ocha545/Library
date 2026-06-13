@@ -44,6 +44,9 @@ namespace Win32
 			Core::isDrop = true;
 			return DefWindowProcW(hWnd, msg, wp, lp);
 
+		case WM_SYSCOMMAND:
+			return DefWindowProcW(hWnd, msg, wp, lp);
+
 		case WM_CLOSE:
 			DestroyWindow(hWnd);
 			return 0;
@@ -69,12 +72,12 @@ namespace Win32
 					{
 						//フラグの登録
 						Core::downKeys.insert(kbd.VKey);
-						std::cout << "InsertKey: " << kbd.VKey << "\n";
+//						std::cout << "InsertKey: " << kbd.VKey << "\n";
 					}
 					else
 					{
 						Core::downKeys.erase(kbd.VKey);
-						std::cout << "EraseKey: " << kbd.VKey << "\n";
+//						std::cout << "EraseKey: " << kbd.VKey << "\n";
 					}
 				}
 				else
@@ -388,11 +391,15 @@ namespace Win32
 		MSG message{};
 		while (PeekMessageW(&message, NULL, 0, 0, PM_REMOVE))
 		{
+			if (message.message == WM_QUIT)
+			{
+				return false;
+			}
 			TranslateMessage(&message);
 			DispatchMessageW(&message);
 		}
 
-		return !(message.message == WM_QUIT);
+		return true;
 	}
 	void Window::show() const
 	{
