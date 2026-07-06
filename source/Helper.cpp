@@ -31,6 +31,29 @@ namespace Win32
 
 		return rect.bottom - rect.top;
 	}
+	POINT GetWindowPos(HWND hwnd)
+	{
+		static POINT pos{ 0, 0 };
+		ClientToScreen(hwnd, &pos);
+
+		return { pos.x, pos.y };
+	}
+
+	POINT operator-(POINT a, POINT b)
+	{
+		return {
+			a.x - b.x,
+			a.y - b.y
+		};
+	}
+
+	POINT operator+(POINT a, POINT b)
+	{
+		return {
+			a.x + b.x,
+			a.y + b.y
+		};
+	}
 
 	namespace String
 	{

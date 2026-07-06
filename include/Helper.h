@@ -17,6 +17,10 @@ namespace Win32
 	int GetWindowPosY(HWND hwnd);
 	int GetWindowWidth(HWND hwnd);
 	int GetWindowHeight(HWND hwnd);
+	POINT GetWindowPos(HWND hwnd);
+
+	POINT operator-(POINT a, POINT b);
+	POINT operator+(POINT a, POINT b);
 
 	namespace String
 	{
