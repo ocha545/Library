@@ -243,7 +243,7 @@ namespace Win32
 		static bool isDrop = false;
 		static std::unordered_set<UINT> downKeys;
 		static std::unordered_set<UINT> prevKeys;
-
+		static POINT monitorCursorPos;
 
 		//表示形式 (未使用)
 		//[SECTION]: information
@@ -271,9 +271,11 @@ namespace Win32
 		bool update() const;
 		void show() const;
 		void close() const;
-		bool down(Key key);
-		bool up(Key key);
-		bool press(Key key);
+		bool down(Key key) const;
+		bool up(Key key) const;
+		bool press(Key key) const;
+		POINT monitorCursorPos() const;
+		POINT cursorPos() const;
 
 		HWND getHandle() const;
 		HINSTANCE getInstance() const;

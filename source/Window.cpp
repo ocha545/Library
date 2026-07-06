@@ -36,6 +36,9 @@ namespace Win32
 					}
 				};
 				RegisterRawInputDevices(rawInputDevices, 2, sizeof(RAWINPUTDEVICE));
+
+				//最初の一度だけカーソルの位置を記録しておく
+				GetCursorPos(&Core::monitorCursorPos);
 			}
 			return DefWindowProcW(hWnd, msg, wp, lp);
 
@@ -56,7 +59,6 @@ namespace Win32
 			return 0;
 
 		case WM_INPUT:
-			Core::prevKeys = Core::downKeys;
 			{
 				RAWINPUT rawInput{};
 				UINT rawInputSize = sizeof(rawInput);
@@ -72,17 +74,15 @@ namespace Win32
 					{
 						//フラグの登録
 						Core::downKeys.insert(kbd.VKey);
-//						std::cout << "InsertKey: " << kbd.VKey << "\n";
 					}
 					else
 					{
 						Core::downKeys.erase(kbd.VKey);
-//						std::cout << "EraseKey: " << kbd.VKey << "\n";
 					}
 				}
-				else
+				else if(rawInput.header.dwType == RIM_TYPEMOUSE)
 				{
-					//マウス用RawInputは今後暇な時実装します。
+					GetCursorPos(&Core::monitorCursorPos);
 				}
 			}
 			return DefWindowProcW(hWnd, msg, wp, lp);
@@ -388,6 +388,8 @@ namespace Win32
 
 	bool Window::update() const
 	{
+		Core::prevKeys = Core::downKeys;
+
 		MSG message{};
 		while (PeekMessageW(&message, NULL, 0, 0, PM_REMOVE))
 		{
@@ -411,19 +413,29 @@ namespace Win32
 		PostMessageW(window, WM_CLOSE, 0, 0);
 	}
 
-	bool Window::down(Key key)
+	bool Window::down(Key key) const
 	{
 		return Core::prevKeys.count((UINT)key) == 0 && Core::downKeys.count((UINT)key) != 0;
 	}
-	bool Window::up(Key key)
+	bool Window::up(Key key) const
 	{
-//		std::cout << "prev:" << Core::prevKeys.count((UINT)key) << ", down:" << Core::downKeys.count((UINT)key) << "\n";
 		return Core::prevKeys.count((UINT)key) != 0 && Core::downKeys.count((UINT)key) == 0;
 	}
-	bool Window::press(Key key)
+	bool Window::press(Key key) const
 	{
 		return Core::downKeys.count((UINT)key) != 0;
 	}
+	POINT Window::monitorCursorPos() const
+	{
+		return Core::monitorCursorPos;
+	}
+	POINT Window::cursorPos() const
+	{
+		POINT temp = Core::monitorCursorPos;
+		ScreenToClient(window, &temp);
+		return temp;
+	}
+
 
 	HWND Window::getHandle() const
 	{
