@@ -152,7 +152,6 @@ namespace Win32
 			}
 		}
 	}
-
 	WAVE::~WAVE()
 	{
 		if (isRead)

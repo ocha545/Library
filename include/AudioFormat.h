@@ -25,6 +25,7 @@ namespace Win32
 		MP3(const std::wstring& path, bool extract);
 		~MP3();
 		operator bool();
+		constexpr AudioFormat getFormat() const { return AudioFormat::MP3; }
 		const std::vector<short> getPCM() const;
 		const AudioInfo getInformation() const;
 		const AudioMetaData2 getMetaData() const;
@@ -43,6 +44,7 @@ namespace Win32
 		WAVE(const std::wstring& path, bool extract);
 		~WAVE();
 		operator bool();
+		constexpr AudioFormat getFormat() const { return AudioFormat::WAVE; }
 		const std::vector<short> getPCM() const;
 		const AudioInfo getInformation() const;
 		const AudioMetaData2 getMetaData() const;
@@ -61,6 +63,7 @@ namespace Win32
 		FLAC(const std::wstring& path, bool extract);
 		~FLAC();
 		operator bool();
+		constexpr AudioFormat getFormat() const { return AudioFormat::FLAC; }
 		const std::vector<short> getPCM() const;
 		const AudioInfo getInformation() const;
 		const AudioMetaData2 getMetaData() const;
@@ -79,6 +82,7 @@ namespace Win32
 		OGG(const std::wstring& path, bool extract);
 		~OGG();
 		operator bool();
+		constexpr AudioFormat getFormat() const { return AudioFormat::OGG; }
 		const std::vector<short> getPCM() const;
 		const AudioInfo getInformation() const;
 		const AudioMetaData2 getMetaData() const;
@@ -97,6 +101,7 @@ namespace Win32
 		OPUS(const std::wstring& path, bool extract);
 		~OPUS();
 		operator bool();
+		constexpr AudioFormat getFormat() const { return AudioFormat::OPUS; }
 		const std::vector<short> getPCM() const;
 		const AudioInfo getInformation() const;
 		const AudioMetaData2 getMetaData() const;
