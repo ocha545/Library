@@ -5,14 +5,14 @@ namespace Win32
 	int GetWindowPosX(HWND hwnd)
 	{
 		static RECT rect{};
-		GetClientRect(hwnd, &rect);
+		GetWindowRect(hwnd, &rect);
 
 		return rect.left;
 	}
 	int GetWindowPosY(HWND hwnd)
 	{
 		static RECT rect{};
-		GetClientRect(hwnd, &rect);
+		GetWindowRect(hwnd, &rect);
 
 		return rect.top;
 	}
@@ -33,10 +33,10 @@ namespace Win32
 	}
 	POINT GetWindowPos(HWND hwnd)
 	{
-		static POINT pos{ 0, 0 };
-		ClientToScreen(hwnd, &pos);
+		static RECT rect{};
+		GetWindowRect(hwnd, &rect);
 
-		return { pos.x, pos.y };
+		return { rect.left, rect.top };
 	}
 
 	POINT operator-(POINT a, POINT b)
